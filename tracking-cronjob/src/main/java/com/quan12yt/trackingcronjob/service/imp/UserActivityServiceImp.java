@@ -36,5 +36,4 @@ public class UserActivityServiceImp implements UserActivityService {
 
 
 
-
 }

@@ -4,10 +4,6 @@ import com.quan12yt.trackingcronjob.util.ValueConstant;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 
 @Configuration
 public class EmailConfig {
