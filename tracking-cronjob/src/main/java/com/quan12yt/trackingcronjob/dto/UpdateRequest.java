@@ -9,4 +9,5 @@ import lombok.Data;
 public class UpdateRequest {
     private UserActivity userActivity;
     private Integer count;
+    private Integer time;
 }

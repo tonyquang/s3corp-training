@@ -21,12 +21,4 @@ public class EmailConfig {
         return message;
     }
 
-    @Bean
-    public MimeMessage mimeMessageTemplate(JavaMailSender sender) throws MessagingException {
-        MimeMessage mimeMessage = sender.createMimeMessage();
-        mimeMessage.setFrom(ValueConstant.EMAIL);
-        mimeMessage.setSubject(ValueConstant.EMAIL_SUBJECT);
-        mimeMessage.setText(ValueConstant.EMAIL_TEXT);
-        return mimeMessage;
-    }
 }

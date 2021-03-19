@@ -15,8 +15,8 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import java.util.Optional;
 
 @Component
-public class UpdateTableJob implements Job {
-    private final Logger logg = LoggerFactory.getLogger(UpdateTableJob.class);
+public class UpdateActivityJob implements Job {
+    private final Logger logg = LoggerFactory.getLogger(UpdateActivityJob.class);
 
     @Autowired
     private UserActivityService activityService;
@@ -27,9 +27,7 @@ public class UpdateTableJob implements Job {
         JobInfo jobInfo = (JobInfo) jobExecutionContext.getMergedJobDataMap().get("mapData");
 
         Optional<UserActivity> uActivity = activityService
-                .updateActivity(jobInfo.getUserActivity(), jobInfo.getAccessCount());
-        uActivity.ifPresent(t ->
-            logg.info("Cant not found User Activity with the given userid"));
+                .updateActivity(jobInfo.getUserActivity(), jobInfo.getAccessCount(), jobInfo.getTime());
         logg.info("User Activity Detail: " + uActivity.toString());
 
     }

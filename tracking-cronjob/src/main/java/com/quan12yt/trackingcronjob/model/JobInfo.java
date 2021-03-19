@@ -17,5 +17,6 @@ public class JobInfo implements Serializable {
     private String callbackData;
     private UserActivity userActivity;
     private Integer accessCount;
+    private Integer time;
 
    }

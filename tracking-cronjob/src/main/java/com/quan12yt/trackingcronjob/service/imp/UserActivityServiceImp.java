@@ -23,11 +23,13 @@ public class UserActivityServiceImp implements UserActivityService {
     }
 
     @Override
-        public Optional<UserActivity> updateActivity(UserActivity userActivity, Integer count) {
+        public Optional<UserActivity> updateActivity(UserActivity userActivity, Integer count, Integer time) {
         return activityRepository.findById(
                 new UserActivityKey(userActivity.getUserId(), userActivity.getUrl(), userActivity.getDate()))
                 .map(t -> {
             t.setAccessCount(t.getAccessCount() + count);
+            t.setTotalTime(t.getTotalTime() + time);
+
             return activityRepository.save(t);
         });
     }

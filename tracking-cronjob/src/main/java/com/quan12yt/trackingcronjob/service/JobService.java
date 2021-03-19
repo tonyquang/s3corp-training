@@ -1,12 +1,14 @@
 package com.quan12yt.trackingcronjob.service;
 
 import com.quan12yt.trackingcronjob.model.UserActivity;
+import org.quartz.SchedulerException;
 
 public interface JobService {
 
     void runSendEmailJoh();
 
-    void runUpdateActivityJob(UserActivity userActivity, Integer count);
+    void runUpdateActivityJob(UserActivity userActivity, Integer count, Integer time);
 
-    void stop();
+    void stopJob(String job) throws SchedulerException;
+
 }

@@ -4,12 +4,14 @@ import com.quan12yt.trackingcronjob.model.JobInfo;
 import com.quan12yt.trackingcronjob.service.ScheduleService;
 import com.quan12yt.trackingcronjob.util.JobUtils;
 import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 
 @Service
 public class ScheduleServiceImp implements ScheduleService {
@@ -30,6 +32,24 @@ public class ScheduleServiceImp implements ScheduleService {
         } catch (SchedulerException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    @Override
+    public void stopJob(String job) throws SchedulerException {
+        Scheduler sched = new StdSchedulerFactory().getScheduler();
+        List jobsList = sched.getCurrentlyExecutingJobs();
+
+        List<JobExecutionContext> currentlyExecuting = scheduler.getCurrentlyExecutingJobs();
+        logger.info(String.valueOf(currentlyExecuting.stream().count()));
+        currentlyExecuting.forEach(t -> {
+            if (t.getJobDetail().getKey().getName().equals(job)) {
+                try {
+                    scheduler.interrupt(t.getJobDetail().getKey());
+                } catch (UnableToInterruptJobException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @PostConstruct

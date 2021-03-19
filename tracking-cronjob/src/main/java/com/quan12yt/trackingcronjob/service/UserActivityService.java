@@ -8,6 +8,6 @@ import java.util.Optional;
 public interface UserActivityService {
     List<String> getViolatedUserByDateAndUrl(String url, String date);
 
-    Optional<UserActivity> updateActivity(UserActivity userActivity, Integer count);
+    Optional<UserActivity> updateActivity(UserActivity userActivity, Integer count, Integer time);
 
 }

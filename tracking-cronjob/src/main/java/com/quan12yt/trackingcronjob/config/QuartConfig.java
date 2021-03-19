@@ -6,8 +6,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import javax.sql.DataSource;
+import java.util.Properties;
 
 @Configuration
 @EnableAutoConfiguration
@@ -20,4 +22,11 @@ public class QuartConfig {
     }
 
 
+    @Bean
+    @ConfigurationProperties(prefix = "quartz")
+    public SchedulerFactoryBean quartzScheduler() {
+        SchedulerFactoryBean quartzScheduler = new SchedulerFactoryBean();
+        quartzScheduler.setDataSource(quartzDataSource());
+        return quartzScheduler;
+    }
 }

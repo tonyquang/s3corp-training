@@ -30,7 +30,7 @@ public final class JobUtils {
                 .withIdentity(jobClass.getSimpleName())
                 .withSchedule(
                         CronScheduleBuilder.cronSchedule(ValueConstant.CRON_EXPRESSION)
-                        .withMisfireHandlingInstructionIgnoreMisfires()
+//                        .withMisfireHandlingInstructionIgnoreMisfires()
                 )
                 .startAt(new Date(System.currentTimeMillis() + info.getInitialOffsetMs()))
                 .build();
