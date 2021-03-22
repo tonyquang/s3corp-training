@@ -11,4 +11,5 @@ public interface JobService {
 
     void stopJob(String job) throws SchedulerException;
 
+    void stop();
 }

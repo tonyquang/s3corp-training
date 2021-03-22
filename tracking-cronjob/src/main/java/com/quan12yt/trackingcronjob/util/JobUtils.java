@@ -16,7 +16,6 @@ public final class JobUtils {
         return JobBuilder
                 .newJob(jobClass)
                 .withIdentity(jobClass.getSimpleName())
-             //   .requestRecovery(true)
                 .setJobData(jobDataMap)
                 .build();
     }

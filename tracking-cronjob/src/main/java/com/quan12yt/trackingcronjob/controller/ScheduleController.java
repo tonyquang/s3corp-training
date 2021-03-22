@@ -64,6 +64,18 @@ public class ScheduleController {
             throw new StartJobFailedException("Failed to stop Send email job");
         }
     }
+    @ApiOperation(value = "Stop all jobs")
+    @GetMapping("/stop")
+    public ResponseEntity<ResponseMessage> stopSchedule() {
+        try {
+            jobService.stop();
+            logger.info("Schedule stopped");
+            return new ResponseEntity<>(new ResponseMessage("Schedule stopped"
+                    , LocalDateTime.now().toString()), HttpStatus.OK);
+        } catch (Exception e) {
+            throw new StartJobFailedException("Failed to stop schedule");
+        }
+    }
 
     @ApiOperation(value = "Stop update jobs")
     @GetMapping("/update/stop")

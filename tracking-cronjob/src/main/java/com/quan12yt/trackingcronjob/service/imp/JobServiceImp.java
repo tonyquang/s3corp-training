@@ -42,4 +42,9 @@ public class JobServiceImp implements JobService {
     public void stopJob(String job) throws SchedulerException {
         scheduleService.stopJob(job);
     }
+
+    @Override
+    public void stop() {
+        scheduleService.shutDownSchedule();
+    }
 }

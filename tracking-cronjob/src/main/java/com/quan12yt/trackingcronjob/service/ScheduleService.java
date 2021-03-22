@@ -8,4 +8,5 @@ public interface ScheduleService {
 
     <T extends Job> void schedule(final Class<T> jobClass, final JobMapData info);
     void stopJob(String job) throws SchedulerException;
+    void shutDownSchedule();
 }

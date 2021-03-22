@@ -50,6 +50,31 @@ public class ScheduleServiceImp implements ScheduleService {
                 }
             }
         });
+//        Job job1 = null;
+//        List<JobExecutionContext> currentlyExecuting = scheduler.getCurrentlyExecutingJobs();
+//        logger.info(String.valueOf(currentlyExecuting.stream().count()));
+//        for(JobExecutionContext jec : currentlyExecuting) {
+//            if (jec.getFireInstanceId().equals(job)) {
+//                job1 = jec.getJobInstance();
+//                if (job1 instanceof InterruptableJob) {
+//                    ((InterruptableJob)job1).interrupt();
+//                } else {
+//                    throw new UnableToInterruptJobException(
+//                            "Job " + jec.getJobDetail().getKey() +
+//                                    " can not be interrupted, since it does not implement " +
+//                                    InterruptableJob.class.getName());
+//                }
+//            }
+//        }
+    }
+
+    @Override
+    public void shutDownSchedule() {
+        try{
+            scheduler.shutdown();
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
     }
 
     @PostConstruct
@@ -61,12 +86,5 @@ public class ScheduleServiceImp implements ScheduleService {
         }
     }
 
-    public void preDestroy() {
-        try {
-            scheduler.shutdown();
-        } catch (SchedulerException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
 
 }
