@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JobInfo implements Serializable {
+public class JobMapData implements Serializable {
     private Integer totalFireCount;
     private Integer remainingFireCount;
     private Boolean runForever;

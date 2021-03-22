@@ -1,6 +1,6 @@
 package com.quan12yt.trackingcronjob.service.imp;
 
-import com.quan12yt.trackingcronjob.model.JobInfo;
+import com.quan12yt.trackingcronjob.model.JobMapData;
 import com.quan12yt.trackingcronjob.service.ScheduleService;
 import com.quan12yt.trackingcronjob.util.JobUtils;
 import org.quartz.*;
@@ -24,7 +24,7 @@ public class ScheduleServiceImp implements ScheduleService {
     }
 
     @Override
-    public <T extends Job> void schedule(final Class<T> jobClass, final JobInfo info) {
+    public <T extends Job> void schedule(final Class<T> jobClass, final JobMapData info) {
         final JobDetail jobDetail = JobUtils.buildJobDetail(jobClass, info);
         final Trigger trigger = JobUtils.buildTrigger(jobClass, info);
         try {

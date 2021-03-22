@@ -2,10 +2,9 @@ package com.quan12yt.trackingcronjob.service.imp;
 
 import com.quan12yt.trackingcronjob.job.SendEmailJob;
 import com.quan12yt.trackingcronjob.job.UpdateActivityJob;
-import com.quan12yt.trackingcronjob.model.JobInfo;
+import com.quan12yt.trackingcronjob.model.JobMapData;
 import com.quan12yt.trackingcronjob.model.UserActivity;
 import com.quan12yt.trackingcronjob.service.JobService;
-import lombok.SneakyThrows;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,7 @@ public class JobServiceImp implements JobService {
 
     @Override
     public void runSendEmailJoh() {
-        final JobInfo info = new JobInfo();
+        final JobMapData info = new JobMapData();
         info.setTotalFireCount(5);
         info.setRemainingFireCount(info.getTotalFireCount());
         info.setInitialOffsetMs(1000L);
@@ -28,7 +27,7 @@ public class JobServiceImp implements JobService {
 
     @Override
     public void runUpdateActivityJob(UserActivity userActivity, Integer count, Integer time) {
-        final JobInfo info = new JobInfo();
+        final JobMapData info = new JobMapData();
         info.setTotalFireCount(5);
         info.setRemainingFireCount(info.getTotalFireCount());
         info.setInitialOffsetMs(1000L);

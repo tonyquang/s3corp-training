@@ -1,6 +1,6 @@
 package com.quan12yt.trackingcronjob.job;
 
-import com.quan12yt.trackingcronjob.model.JobInfo;
+import com.quan12yt.trackingcronjob.model.JobMapData;
 import com.quan12yt.trackingcronjob.model.UserActivity;
 import com.quan12yt.trackingcronjob.service.UserActivityService;
 import org.quartz.Job;
@@ -24,7 +24,7 @@ public class UpdateActivityJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-        JobInfo jobInfo = (JobInfo) jobExecutionContext.getMergedJobDataMap().get("mapData");
+        JobMapData jobInfo = (JobMapData) jobExecutionContext.getMergedJobDataMap().get("mapData");
 
         Optional<UserActivity> uActivity = activityService
                 .updateActivity(jobInfo.getUserActivity(), jobInfo.getAccessCount(), jobInfo.getTime());

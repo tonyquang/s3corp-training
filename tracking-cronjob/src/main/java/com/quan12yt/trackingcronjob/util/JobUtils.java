@@ -1,7 +1,7 @@
 package com.quan12yt.trackingcronjob.util;
 
 
-import com.quan12yt.trackingcronjob.model.JobInfo;
+import com.quan12yt.trackingcronjob.model.JobMapData;
 import org.quartz.*;
 
 import java.util.Date;
@@ -10,7 +10,7 @@ public final class JobUtils {
 
     private JobUtils() {}
 
-    public static JobDetail buildJobDetail(final Class jobClass, final JobInfo info) {
+    public static JobDetail buildJobDetail(final Class jobClass, final JobMapData info) {
         final JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put(jobClass.getSimpleName(), info);
         return JobBuilder
@@ -21,7 +21,7 @@ public final class JobUtils {
                 .build();
     }
 
-    public static Trigger buildTrigger(final Class jobClass, final JobInfo info) {
+    public static Trigger buildTrigger(final Class jobClass, final JobMapData info) {
         final JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put("mapData", info);
         return TriggerBuilder
