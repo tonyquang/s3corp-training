@@ -4,6 +4,7 @@ import com.quan12yt.trackingcronjob.model.Users;
 import com.quan12yt.trackingcronjob.service.UserActivityService;
 import com.quan12yt.trackingcronjob.service.UserService;
 import com.quan12yt.trackingcronjob.service.imp.EmailService;
+import com.quan12yt.trackingcronjob.util.DateUtils;
 import lombok.SneakyThrows;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -15,6 +16,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -34,13 +36,13 @@ public class SendEmailJob implements Job {
     @SneakyThrows
     @Override
     public void execute(JobExecutionContext jobExecutionContext) {
-        logger.info("Previous schedule fire time :" + jobExecutionContext.getPreviousFireTime());
-        logger.info("Schedule fire time :" + jobExecutionContext.getScheduledFireTime());
+        logger.info("Previous schedule fire time :" + DateUtils.convertDateToString(jobExecutionContext.getPreviousFireTime()));
+        logger.info("Schedule fire time :" + DateUtils.convertDateToString(jobExecutionContext.getScheduledFireTime()));
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
         try {
-            String date = DateTimeFormatter.ofPattern("MM-dd-yyyy", Locale.ENGLISH)
-                    .format(LocalDateTime.now());
-            List<String> violatedUsers = activityService.getViolatedUserByDateAndUrl("facebook.com", date);
+            String scheduleFireTime = DateUtils.convertDateToString(jobExecutionContext.getScheduledFireTime());
+           // String date = DateUtils.convertDateToString(new Date());
+            List<String> violatedUsers = activityService.getViolatedUserByDateAndUrl("facebook.com", scheduleFireTime);
             if (violatedUsers.isEmpty()) {
                 logger.info("There isn't any violated user");
                 return;

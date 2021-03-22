@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(StartJobFailedException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorMessage UserNotfound(StartJobFailedException ex, WebRequest webRequest){
+    public ErrorMessage UserNotFound(StartJobFailedException ex, WebRequest webRequest){
         return new ErrorMessage(HttpStatus.BAD_REQUEST.value()
                 , ex.getMessage()
                 , new Date()
