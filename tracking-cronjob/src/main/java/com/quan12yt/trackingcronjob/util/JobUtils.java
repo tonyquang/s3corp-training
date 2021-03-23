@@ -34,4 +34,18 @@ public final class JobUtils {
                 .startAt(new Date(System.currentTimeMillis() + info.getInitialOffsetMs()))
                 .build();
     }
+
+    public static Trigger buildTriggerTest(final Class jobClass, Integer integer) {
+        final JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put("mapData", integer);
+        return TriggerBuilder
+                .newTrigger()
+                .withIdentity(jobClass.getSimpleName())
+                .withSchedule(
+                        CronScheduleBuilder.cronSchedule("* * * ? * *")
+                                .withMisfireHandlingInstructionIgnoreMisfires()
+                )
+                .startAt(new Date(System.currentTimeMillis()))
+                .build();
+    }
 }

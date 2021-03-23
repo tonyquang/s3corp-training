@@ -6,10 +6,10 @@ public final class ValueConstant {
     public static final String EMAIL_TEXT = "You have passed facebook accesses limitation for today. Please focus on your work";
 
     //start job every 30seconds
-    public static final String CRON_EXPRESSION = "0/10 0/1 * 1/1 * ? *";
+    public static final String CRON_EXPRESSION = "* * * ? * *";
 
     //start job at 11am and 16pm everday
-   // public static final String CRON_EXPRESSION = "0 0 11,16 * * ?";
+ //   public static final String CRON_EXPRESSION = "0 0 11,16 * * ?";
 
     private ValueConstant() {
     }

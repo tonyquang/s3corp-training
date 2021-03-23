@@ -5,7 +5,6 @@ import com.quan12yt.trackingcronjob.service.UserActivityService;
 import com.quan12yt.trackingcronjob.service.UserService;
 import com.quan12yt.trackingcronjob.service.imp.EmailService;
 import com.quan12yt.trackingcronjob.util.DateUtils;
-import com.quan12yt.trackingcronjob.util.ListUtils;
 import lombok.SneakyThrows;
 import org.quartz.InterruptableJob;
 import org.quartz.Job;
@@ -17,11 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Component
@@ -46,14 +41,8 @@ public class SendEmailJob implements Job, InterruptableJob {
         try {
             String scheduleFireTime = DateUtils.convertDateToString(jobExecutionContext.getScheduledFireTime());
             List<String> violatedUsers = activityService.getViolatedUserByDateAndUrl("facebook.com", scheduleFireTime);
-            if (violatedUsers.isEmpty()) {
-                logger.info("There isn't any violated user");
-                return;
-            }
             List<Users> users = userService.getUsersById(violatedUsers);
-            if(!users.isEmpty()) {
-                emailService.sendEmail(users.stream().map(t -> t.getEmail()).collect(Collectors.toList()));
-            }
+            emailService.sendEmail(users.stream().map(t -> t.getEmail()).collect(Collectors.toList()));
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

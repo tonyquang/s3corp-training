@@ -24,9 +24,9 @@ public class ScheduleServiceImp implements ScheduleService {
     }
 
     @Override
-    public <T extends Job> void schedule(final Class<T> jobClass, final JobMapData info) {
-        final JobDetail jobDetail = JobUtils.buildJobDetail(jobClass, info);
-        final Trigger trigger = JobUtils.buildTrigger(jobClass, info);
+    public <T extends Job> void schedule(final Class<T> jobClass, final JobMapData jobMapData) {
+        final JobDetail jobDetail = JobUtils.buildJobDetail(jobClass, jobMapData);
+        final Trigger trigger = JobUtils.buildTrigger(jobClass, jobMapData);
         try {
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {
@@ -50,27 +50,11 @@ public class ScheduleServiceImp implements ScheduleService {
                 }
             }
         });
-//        Job job1 = null;
-//        List<JobExecutionContext> currentlyExecuting = scheduler.getCurrentlyExecutingJobs();
-//        logger.info(String.valueOf(currentlyExecuting.stream().count()));
-//        for(JobExecutionContext jec : currentlyExecuting) {
-//            if (jec.getFireInstanceId().equals(job)) {
-//                job1 = jec.getJobInstance();
-//                if (job1 instanceof InterruptableJob) {
-//                    ((InterruptableJob)job1).interrupt();
-//                } else {
-//                    throw new UnableToInterruptJobException(
-//                            "Job " + jec.getJobDetail().getKey() +
-//                                    " can not be interrupted, since it does not implement " +
-//                                    InterruptableJob.class.getName());
-//                }
-//            }
-//        }
     }
 
     @Override
     public void shutDownSchedule() {
-        try{
+        try {
             scheduler.shutdown();
         } catch (SchedulerException e) {
             e.printStackTrace();
