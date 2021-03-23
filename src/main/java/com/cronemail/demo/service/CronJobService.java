@@ -48,6 +48,9 @@ public class CronJobService implements Job {
 
         List<String> emails = new ArrayList<>();
         for (UserActivity urAc : usersActivity) {
+            String userID = usersServices.selectEmailFromUserID(urAc.getUserId());
+            if(userID.isEmpty())
+                continue;
             emails.add(usersServices.selectEmailFromUserID(urAc.getUserId()));
         }
 

@@ -11,3 +11,6 @@ Start schedule
 ```bash
 http://localhost:8081/api/timer/start-job
 ```
+
+### Unit Test Note
+You must change user and password in TestEmailService.properties before run sendMailSuccessTest() and sendMailAuthenticationFailTest() method.

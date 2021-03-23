@@ -41,6 +41,14 @@ public class ScheduleService {
         }
     }
 
+    public <T extends Job> void deleteJob(final Class<T> jobClass){
+        try {
+            scheduler.deleteJob(new JobKey(jobClass.getName()));
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+    }
+
     @PreDestroy
     public void preDestroy(){
         try {

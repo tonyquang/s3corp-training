@@ -20,7 +20,7 @@ public class EmailServices implements IEmailService {
 
         msg.setSubject(emailModel.getSubject());
         msg.setText(emailModel.getContent());
-
         javaMailSender.send(msg);
     }
+
 }
