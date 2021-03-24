@@ -2,8 +2,9 @@ package com.server.trafficweb.controllers;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -29,14 +30,17 @@ public class UserActivityController {
 	public void saveUserActivity() {
 		RestHighLevelClient client = userActivityService.createRestHighLevelClient(IConfigConstants.HOSTNAME,
 				IConfigConstants.PORT, IConfigConstants.PROTOCOL);
+		if (client == null) {
+			LOGGER.error("Failed to create RestHighLevelClient");
+			return;
+		}
 		try {
-			List<String> fieldNames = new ArrayList<>();
-			fieldNames.add(USER_ID);
-			fieldNames.add(URL);
-			fieldNames.add(TIME_STAMP);
-			userActivityService.saveDocument(client, INDEX_NAME, fieldNames);
+			List<String> fieldNames = Stream.of(USER_ID, URL, TIME_STAMP).collect(Collectors.toList());
+			if (!userActivityService.saveDocument(client, INDEX_NAME, fieldNames)) {
+				LOGGER.error("Failed to save data");
+				return;
+			}
 		} catch (ParseException e) {
-			e.printStackTrace();
 			LOGGER.error(e.getMessage() + e.getStackTrace());
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage() + e.getStackTrace());
@@ -47,6 +51,5 @@ public class UserActivityController {
 				LOGGER.error(e.getMessage() + e.getStackTrace());
 			}
 		}
-
 	}
 }

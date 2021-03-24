@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.http.HttpHost;
 import org.apache.log4j.Logger;
@@ -53,30 +55,68 @@ public class UserActivityService implements IUserActivityService {
 	 * @return
 	 */
 	public RestHighLevelClient createRestHighLevelClient(final String host, final int port, final String protocol) {
-		RestHighLevelClient client = new RestHighLevelClient(RestClient.builder(new HttpHost(host, port, protocol)));
-		return client;
+		try {
+			RestHighLevelClient client = new RestHighLevelClient(
+					RestClient.builder(new HttpHost(host, port, protocol)));
+			return client;
+		} catch (Exception e) {
+			return null;
+		}
+
 	}
 
-	private SearchResponse getDistinctAgg(final RestHighLevelClient client, final String indexName,
+	private AggregationBuilder createAggregationBuilder(final List<String> fieldNames, final List<Integer> sizes) {
+		try {
+			return AggregationBuilders.terms(fieldNames.get(0) + AGGS_SUFFIX).field(fieldNames.get(0) + KEYWORD_SUFFIX)
+					.subAggregation(AggregationBuilders.terms(fieldNames.get(1) + AGGS_SUFFIX)
+							.field(fieldNames.get(1) + KEYWORD_SUFFIX)
+							.subAggregation(AggregationBuilders.terms(fieldNames.get(2) + AGGS_SUFFIX)
+									.field(fieldNames.get(2)).size(sizes.get(2)))
+							.size(sizes.get(1)))
+					.size(sizes.get(0));
+		} catch (Exception e) {
+			return null;
+		}
+
+	}
+
+	public SearchResponse getSearchResponse(final RestHighLevelClient client, final String indexName,
 			final List<String> fieldNames) throws IOException {
+
+		if (null == client || null == indexName || indexName.isEmpty() || fieldNames == null) {
+			return null;
+		}
+		List<Integer> sizes = Stream.of(200, 1000, 100).collect(Collectors.toList());
 		SearchRequest searchRequest = new SearchRequest(indexName);
 		searchRequest.searchType();
+
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(QueryBuilders.matchAllQuery());
-
-		AggregationBuilder aggregation = AggregationBuilders.terms(fieldNames.get(0) + AGGS_SUFFIX)
-				.field(fieldNames.get(0) + KEYWORD_SUFFIX)
-				.subAggregation(AggregationBuilders.terms(fieldNames.get(1) + AGGS_SUFFIX)
-						.field(fieldNames.get(1) + KEYWORD_SUFFIX).subAggregation(AggregationBuilders
-								.terms(fieldNames.get(2) + AGGS_SUFFIX).field(fieldNames.get(2)).size(100))
-						.size(1000))
-				.size(200);
+		AggregationBuilder aggregation = createAggregationBuilder(fieldNames, sizes);
+		if (aggregation == null) {
+			return null;
+		}
 		searchSourceBuilder.aggregation(aggregation);
-
 		searchRequest.source(searchSourceBuilder);
 		SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
 		LOGGER.info("Search respones: " + searchResponse);
 		return searchResponse;
+	}
+
+	public UserActivityDB saveUserActivity(final String date, final String userId, final String url, final int count,
+			final double totalTime) {
+		try {
+			UserActivityDB userActivity = new UserActivityDB();
+			userActivity.setDate(date);
+			userActivity.setUser_id(userId);
+			userActivity.setUrl(url);
+			userActivity.setCount(count);
+			userActivity.setTotal_time(totalTime);
+			return activityDBRepo.save(userActivity);
+		} catch (Exception e) {
+			return null;
+		}
+
 	}
 
 	/**
@@ -87,37 +127,48 @@ public class UserActivityService implements IUserActivityService {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	public void saveDocument(final RestHighLevelClient client, final String indexName, final List<String> fieldNames)
+	public boolean saveDocument(final RestHighLevelClient client, final String indexName, final List<String> fieldNames)
 			throws ParseException, IOException {
+		SearchResponse searchResponse = getSearchResponse(client, indexName, fieldNames);
+		if (searchResponse == null) {
+			return false;
+		}
 
-		SearchResponse searchResponse = getDistinctAgg(client, indexName, fieldNames);
 		Terms termsUser = searchResponse.getAggregations().get(fieldNames.get(0) + AGGS_SUFFIX);
+		if (termsUser == null || termsUser.getBuckets().size() == 0) {
+			return false;
+		}
 
 		for (Terms.Bucket user : termsUser.getBuckets()) {
-			UserActivityDB userActivity = new UserActivityDB();
-			userActivity.setDate(getCurrentTime());
-			userActivity.setUser_id(user.getKey().toString());
+
 			Terms termsUrl = user.getAggregations().get(fieldNames.get(1) + AGGS_SUFFIX);
+			if (termsUrl == null || termsUrl.getBuckets().size() == 0) {
+				return false;
+			}
 
 			for (Terms.Bucket url : termsUrl.getBuckets()) {
-				userActivity.setUrl(url.getKey().toString());
-
 				Terms termsTime = url.getAggregations().get(fieldNames.get(2) + AGGS_SUFFIX);
+				if (termsTime == null || termsTime.getBuckets().size() == 0) {
+					return false;
+				}
 
 				List<Double> times = new ArrayList<>();
 				for (Terms.Bucket time : termsTime.getBuckets()) {
 					times.add(toMilliseconds(time.getKeyAsString()));
-
 				}
-				userActivity.setCount(countTimesTraffic(times));
-				userActivity.setTotal_time(countTotalTime(times));
-				activityDBRepo.save(userActivity);
-				LOGGER.info(userActivity);
+
+				UserActivityDB userActivity = saveUserActivity(getCurrentTime(), user.getKey().toString(),
+						url.getKey().toString(), countTimesTraffic(times), countTotalTime(times));
+				LOGGER.info("User activity: " + userActivity);
+				if (userActivity == null) {
+					return false;
+				}
 			}
 		}
+		return true;
 	}
 
-	private String getCurrentTime() {
+	public String getCurrentTime() {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 		Date date = new Date(System.currentTimeMillis());
 		return formatter.format(date);
