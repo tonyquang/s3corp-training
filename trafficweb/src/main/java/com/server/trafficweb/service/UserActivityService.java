@@ -26,9 +26,13 @@ import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.server.trafficweb.constants.IConfigConstants;
 import com.server.trafficweb.models.UserActivityDB;
 import com.server.trafficweb.repository.UserActivityDBRepo;
 
@@ -37,12 +41,16 @@ import com.server.trafficweb.repository.UserActivityDBRepo;
  *
  */
 @Service
-public class UserActivityService implements IUserActivityService {
+public class UserActivityService implements IUserActivityService, Job {
 
 	final static Logger LOGGER = Logger.getLogger(UserActivityService.class);
 	private final String AGGS_SUFFIX = "_aggs";
 	private final String KEYWORD_SUFFIX = ".keyword";
 	private final double WAITTIME = 180000.0;
+	private String USER_ID = "user_id";
+	private String URL = "url";
+	private String TIME_STAMP = "@timestamp";
+	private String INDEX_NAME = "proxyinfo";
 
 	@Autowired
 	private UserActivityDBRepo activityDBRepo;
@@ -129,6 +137,7 @@ public class UserActivityService implements IUserActivityService {
 	 */
 	public boolean saveDocument(final RestHighLevelClient client, final String indexName, final List<String> fieldNames)
 			throws ParseException, IOException {
+
 		SearchResponse searchResponse = getSearchResponse(client, indexName, fieldNames);
 		if (searchResponse == null) {
 			return false;
@@ -165,6 +174,7 @@ public class UserActivityService implements IUserActivityService {
 				}
 			}
 		}
+
 		return true;
 	}
 
@@ -209,5 +219,32 @@ public class UserActivityService implements IUserActivityService {
 			totalTime = diffTime > WAITTIME ? (totalTime += WAITTIME) : (totalTime += diffTime);
 		}
 		return MillisecondsToSecondS(totalTime);
+	}
+
+	@Override
+	public void execute(JobExecutionContext context) throws JobExecutionException {
+		RestHighLevelClient client = createRestHighLevelClient(IConfigConstants.HOSTNAME, IConfigConstants.PORT,
+				IConfigConstants.PROTOCOL);
+		if (client == null) {
+			LOGGER.error("Failed to create RestHighLevelClient");
+			return;
+		}
+		try {
+			List<String> fieldNames = Stream.of(USER_ID, URL, TIME_STAMP).collect(Collectors.toList());
+			if (!saveDocument(client, INDEX_NAME, fieldNames)) {
+				LOGGER.error("Failed to save data");
+				return;
+			}
+		} catch (ParseException e) {
+			LOGGER.error(e.getMessage() + e.getStackTrace());
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage() + e.getStackTrace());
+		} finally {
+			try {
+				client.close();
+			} catch (IOException e) {
+				LOGGER.error(e.getMessage() + e.getStackTrace());
+			}
+		}
 	}
 }
