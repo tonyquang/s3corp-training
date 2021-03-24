@@ -22,12 +22,12 @@ public class UserServiceImp implements UserService {
     }
 
     public List<Users> getUsersById(List<String> userIds) {
-        List<Users> usersList = new ArrayList<>();
-       usersList = userRepository.findAllById(userIds);
-       if(usersList.isEmpty()){
-           throw new DataNotFoundException("Can't find any user for the given user id");
-       }
-       return usersList;
+        List<Users> usersList;
+        usersList = userRepository.findAllById(userIds);
+        if (usersList.isEmpty()) {
+            throw new DataNotFoundException("Can't find any user for the given user id");
+        }
+        return usersList;
     }
 
 

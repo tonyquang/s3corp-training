@@ -10,11 +10,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class JobMapData implements Serializable {
-    private Integer totalFireCount;
-    private Integer remainingFireCount;
-    private Boolean runForever;
     private Long initialOffsetMs;
-    private String callbackData;
     private UserActivity userActivity;
     private Integer accessCount;
     private Integer time;

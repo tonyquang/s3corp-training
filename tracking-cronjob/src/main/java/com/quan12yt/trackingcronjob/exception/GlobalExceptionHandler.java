@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(StartJobFailedException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorMessage UserNotFound(StartJobFailedException ex, WebRequest webRequest){
+    public ErrorMessage userNotFound(StartJobFailedException ex, WebRequest webRequest){
         return new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.value()
                 , ex.getMessage()
                 , new Date()
@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorMessage DataNotFound(DataNotFoundException ex, WebRequest webRequest){
+    public ErrorMessage dataNotFound(DataNotFoundException ex, WebRequest webRequest){
         return new ErrorMessage(HttpStatus.BAD_REQUEST.value()
                 , ex.getMessage()
                 , new Date()

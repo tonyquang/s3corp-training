@@ -25,7 +25,7 @@ public class ScheduleServiceImp implements ScheduleService {
 
     @Override
     public <T extends Job> void schedule(final Class<T> jobClass, final JobMapData jobMapData) {
-        final JobDetail jobDetail = JobUtils.buildJobDetail(jobClass, jobMapData);
+        final JobDetail jobDetail = JobUtils.buildJobDetail(jobClass);
         final Trigger trigger = JobUtils.buildTrigger(jobClass, jobMapData);
         try {
             scheduler.scheduleJob(jobDetail, trigger);
@@ -37,7 +37,6 @@ public class ScheduleServiceImp implements ScheduleService {
     @Override
     public void stopJob(String job) throws SchedulerException {
         Scheduler sched = new StdSchedulerFactory().getScheduler();
-        List jobsList = sched.getCurrentlyExecutingJobs();
 
         List<JobExecutionContext> currentlyExecuting = scheduler.getCurrentlyExecutingJobs();
         logger.info(String.valueOf(currentlyExecuting.stream().count()));

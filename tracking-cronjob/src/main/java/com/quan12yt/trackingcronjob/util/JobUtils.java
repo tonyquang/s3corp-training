@@ -10,13 +10,10 @@ public final class JobUtils {
 
     private JobUtils() {}
 
-    public static JobDetail buildJobDetail(final Class jobClass, final JobMapData info) {
-        final JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put(jobClass.getSimpleName(), info);
+    public static JobDetail buildJobDetail(final Class jobClass) {
         return JobBuilder
                 .newJob(jobClass)
                 .withIdentity(jobClass.getSimpleName())
-                .setJobData(jobDataMap)
                 .build();
     }
 

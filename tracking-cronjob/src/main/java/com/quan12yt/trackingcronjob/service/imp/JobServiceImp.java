@@ -18,21 +18,15 @@ public class JobServiceImp implements JobService {
     @Override
     public void runSendEmailJoh() {
         final JobMapData info = new JobMapData();
-        info.setTotalFireCount(5);
-        info.setRemainingFireCount(info.getTotalFireCount());
         info.setInitialOffsetMs(1000L);
-        info.setCallbackData("My callback data");
         scheduleService.schedule(SendEmailJob.class, info);
     }
 
     @Override
     public void runUpdateActivityJob(UserActivity userActivity, Integer count, Integer time) {
         final JobMapData info = new JobMapData();
-        info.setTotalFireCount(5);
-        info.setRemainingFireCount(info.getTotalFireCount());
         info.setInitialOffsetMs(1000L);
         info.setTime(time);
-        info.setCallbackData("My callback data");
         info.setUserActivity(userActivity);
         info.setAccessCount(count);
         scheduleService.schedule(UpdateActivityJob.class, info);

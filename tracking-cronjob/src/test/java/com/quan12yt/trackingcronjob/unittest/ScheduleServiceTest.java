@@ -58,11 +58,8 @@ public class ScheduleServiceTest {
         when(schedulerFactoryBean.getScheduler()).thenReturn(scheduler);
 
         info = new JobMapData();
-        info.setTotalFireCount(5);
-        info.setRemainingFireCount(info.getTotalFireCount());
         info.setInitialOffsetMs(1000L);
         info.setAccessCount(0);
-        info.setCallbackData("My callback data");
     }
 
     @After
@@ -73,18 +70,15 @@ public class ScheduleServiceTest {
     public void testRunSchedule() throws SchedulerException, InterruptedException {
         Logger logger =(Logger) LoggerFactory.getLogger(ExampleJob.class);
 
-        // create and start a ListAppender
         ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
         listAppender.start();
 
-        // add the appender to the logger
-        // addAppender is outdated now
         logger.addAppender(listAppender);
         scheduleService.schedule(ExampleJob.class, info);
         Thread.sleep(10000);
         List<ILoggingEvent> logsList = listAppender.list;
 
-        Assert.assertTrue(logsList.get(0).getMessage().equals("asdasd"));
+        Assert.assertEquals( "asdasd", logsList.get(0).getMessage());
     }
 }
 
