@@ -1,7 +1,7 @@
 package com.cronemail.demo.service;
 
-import com.cronemail.demo.service.timeservices.ScheduleService;
 import com.cronemail.demo.utils.Constant;
+import com.easyquartz.scheduler.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ public class PlaygroundServices {
     }
 
     public void runCronJobHandler(){
-        scheduleService.schedule(CronJobService.class, Constant.CRONJOB_EXPRESSION);
+        scheduleService.schedule(CronJobService.class, Constant.GROUP_ID ,Constant.CRONJOB_EXPRESSION);
     }
 
 }

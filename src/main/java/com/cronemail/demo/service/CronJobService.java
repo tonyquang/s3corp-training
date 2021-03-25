@@ -4,6 +4,7 @@ import com.cronemail.demo.model.EmailModel;
 import com.cronemail.demo.model.UserActivity;
 import com.cronemail.demo.utils.Constant;
 import lombok.extern.slf4j.Slf4j;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -28,7 +29,7 @@ public class CronJobService implements Job {
     @Autowired
     IUserActivityService userActivityServices;
 
-    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -39,26 +40,26 @@ public class CronJobService implements Job {
 
     private void sendMail(String timeStamp) {
         log.info(timeStamp);
-        List<UserActivity> usersActivity = userActivityServices
-                .selectUserActivityList(Constant.HOST_NAME,
-                        Constant.MAX_TIME_ACCESS_FB,
-                        timeStamp);
-        if (usersActivity.isEmpty())
-            return;
-
-        List<String> emails = new ArrayList<>();
-        for (UserActivity urAc : usersActivity) {
-            String userID = usersServices.selectEmailFromUserID(urAc.getUserId());
-            if(userID.isEmpty())
-                continue;
-            emails.add(usersServices.selectEmailFromUserID(urAc.getUserId()));
-        }
-
-        emailServices.sendMail(EmailModel.builder()
-                .email(emails)
-                .content(Constant.EMAIL_CONTENT)
-                .subject(Constant.EMAIL_SUBJECT)
-                .build());
+//        List<UserActivity> usersActivity = userActivityServices
+//                .selectUserActivityList(Constant.HOST_NAME,
+//                        Constant.MAX_TIME_ACCESS_FB,
+//                        timeStamp);
+//        if (usersActivity.isEmpty())
+//            return;
+//
+//        List<String> emails = new ArrayList<>();
+//        for (UserActivity urAc : usersActivity) {
+//            String userID = usersServices.selectEmailFromUserID(urAc.getUserId());
+//            if(userID.isEmpty())
+//                continue;
+//            emails.add(usersServices.selectEmailFromUserID(urAc.getUserId()));
+//        }
+//
+//        emailServices.sendMail(EmailModel.builder()
+//                .email(emails)
+//                .content(Constant.EMAIL_CONTENT)
+//                .subject(Constant.EMAIL_SUBJECT)
+//                .build());
     }
 
 }
