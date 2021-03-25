@@ -41,7 +41,7 @@ public class TestSaveDocument {
 		List<String> fieldNames = Stream.of(USER_ID, URL, TIME_STAMP).collect(Collectors.toList());
 
 		try {
-			boolean isSave = service.saveDocument(client, indexName, fieldNames);
+			boolean isSave = service.saveUserActivitesByGroupby(client, indexName, fieldNames);
 			assertFalse(isSave);
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -54,7 +54,7 @@ public class TestSaveDocument {
 	void testSaveDocument2() {
 		String indexName = "proxyinfo";
 		try {
-			boolean isSave = service.saveDocument(client, indexName, null);
+			boolean isSave = service.saveUserActivitesByGroupby(client, indexName, null);
 			assertFalse(isSave);
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -69,7 +69,7 @@ public class TestSaveDocument {
 		List<String> fieldNames = Stream.of(USER_ID, URL, TIME_STAMP).collect(Collectors.toList());
 
 		try {
-			boolean isSave = service.saveDocument(null, indexName, fieldNames);
+			boolean isSave = service.saveUserActivitesByGroupby(null, indexName, fieldNames);
 			assertFalse(isSave);
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -84,7 +84,7 @@ public class TestSaveDocument {
 		List<String> fieldNames = Stream.of(USER_ID, URL, TIME_STAMP).collect(Collectors.toList());
 
 		try {
-			boolean isSave = service.saveDocument(client, indexName, fieldNames);
+			boolean isSave = service.saveUserActivitesByGroupby(client, indexName, fieldNames);
 			assertFalse(isSave);
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -98,7 +98,7 @@ public class TestSaveDocument {
 		String indexName = "";
 		List<String> fieldNames = Stream.of(USER_ID, URL, TIME_STAMP).collect(Collectors.toList());
 		try {
-			boolean isSave = service.saveDocument(client, indexName, fieldNames);
+			boolean isSave = service.saveUserActivitesByGroupby(client, indexName, fieldNames);
 			assertFalse(isSave);
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -113,7 +113,7 @@ public class TestSaveDocument {
 		List<String> fieldNames = Stream.of(USER_ID, URL, "aaa").collect(Collectors.toList());
 
 		try {
-			boolean isSave = service.saveDocument(client, indexName, fieldNames);
+			boolean isSave = service.saveUserActivitesByGroupby(client, indexName, fieldNames);
 			assertFalse(isSave);
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -128,7 +128,7 @@ public class TestSaveDocument {
 		List<String> fieldNames = Stream.of(USER_ID, "aaa", TIME_STAMP).collect(Collectors.toList());
 
 		try {
-			boolean isSave = service.saveDocument(client, indexName, fieldNames);
+			boolean isSave = service.saveUserActivitesByGroupby(client, indexName, fieldNames);
 			assertFalse(isSave);
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -143,7 +143,7 @@ public class TestSaveDocument {
 		List<String> fieldNames = Stream.of("aaa", URL, TIME_STAMP).collect(Collectors.toList());
 
 		try {
-			boolean isSave = service.saveDocument(client, indexName, fieldNames);
+			boolean isSave = service.saveUserActivitesByGroupby(client, indexName, fieldNames);
 			assertFalse(isSave);
 		} catch (ParseException e) {
 			e.printStackTrace();

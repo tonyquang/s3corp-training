@@ -70,6 +70,12 @@
 			<version>70be4f9da6</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.github.quan12yt</groupId>
+			<artifactId>s3training-common-dbconnect</artifactId>
+			<version>6795c1e082</version>
+		</dependency>
+
 	</dependencies>
 
 	<repositories>

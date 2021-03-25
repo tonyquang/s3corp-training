@@ -22,6 +22,8 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.reindex.BulkByScrollResponse;
+import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
@@ -31,6 +33,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.server.trafficweb.constants.IConfigConstants;
 import com.server.trafficweb.models.UserActivityDB;
@@ -41,6 +44,7 @@ import com.server.trafficweb.repository.UserActivityDBRepo;
  *
  */
 @Service
+@Transactional
 public class UserActivityService implements IUserActivityService, Job {
 
 	final static Logger LOGGER = Logger.getLogger(UserActivityService.class);
@@ -88,7 +92,15 @@ public class UserActivityService implements IUserActivityService, Job {
 
 	}
 
-	public SearchResponse getSearchResponse(final RestHighLevelClient client, final String indexName,
+	/**
+	 * 
+	 * @param client
+	 * @param indexName
+	 * @param fieldNames
+	 * @return
+	 * @throws IOException
+	 */
+	public SearchResponse getSearchResponseByGroupbyFields(final RestHighLevelClient client, final String indexName,
 			final List<String> fieldNames) throws IOException {
 
 		if (null == client || null == indexName || indexName.isEmpty() || fieldNames == null) {
@@ -111,6 +123,51 @@ public class UserActivityService implements IUserActivityService, Job {
 		return searchResponse;
 	}
 
+	/**
+	 * 
+	 * @param client
+	 * @param indexName
+	 * @return
+	 * @throws IOException
+	 */
+	public SearchResponse getSearchResponseByAll(final RestHighLevelClient client, final String indexName)
+			throws IOException {
+		SearchRequest searchRequest = new SearchRequest(indexName);
+		searchRequest.searchType();
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+		searchRequest.source(searchSourceBuilder);
+		SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+		LOGGER.info("Search respones: " + searchResponse);
+		return searchResponse;
+	}
+
+	/**
+	 * 
+	 * @param client
+	 * @param indexName
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean isExistDocuments(final RestHighLevelClient client, final String indexName) throws IOException {
+		SearchResponse response = getSearchResponseByAll(client, indexName);
+
+		if (null == response || response.getHits().getHits().length == 0) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * 
+	 * @param date
+	 * @param userId
+	 * @param url
+	 * @param count
+	 * @param totalTime
+	 * @return
+	 */
 	public UserActivityDB saveUserActivity(final String date, final String userId, final String url, final int count,
 			final double totalTime) {
 		try {
@@ -131,20 +188,48 @@ public class UserActivityService implements IUserActivityService, Job {
 	 * 
 	 * @param client
 	 * @param indexName
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean deleteAllDocuments(final RestHighLevelClient client, final String indexName) throws IOException {
+		if (!isExistDocuments(client, indexName)) {
+			return false;
+		}
+
+		DeleteByQueryRequest request = new DeleteByQueryRequest(indexName);
+		request.setQuery(QueryBuilders.matchAllQuery());
+		BulkByScrollResponse response;
+		try {
+			response = client.deleteByQuery(request, RequestOptions.DEFAULT);
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage() + e.getStackTrace());
+			return false;
+		}
+		if (response.getDeleted() == 0)
+			return false;
+		return true;
+	}
+
+	/**
+	 * 
+	 * @param client
+	 * @param indexName
 	 * @param fieldNames
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	public boolean saveDocument(final RestHighLevelClient client, final String indexName, final List<String> fieldNames)
-			throws ParseException, IOException {
+	public boolean saveUserActivitesByGroupby(final RestHighLevelClient client, final String indexName,
+			final List<String> fieldNames) throws ParseException, IOException {
 
-		SearchResponse searchResponse = getSearchResponse(client, indexName, fieldNames);
+		SearchResponse searchResponse = getSearchResponseByGroupbyFields(client, indexName, fieldNames);
 		if (searchResponse == null) {
+			LOGGER.error("search response is null");
 			return false;
 		}
 
 		Terms termsUser = searchResponse.getAggregations().get(fieldNames.get(0) + AGGS_SUFFIX);
 		if (termsUser == null || termsUser.getBuckets().size() == 0) {
+			LOGGER.error("Users is null");
 			return false;
 		}
 
@@ -152,12 +237,14 @@ public class UserActivityService implements IUserActivityService, Job {
 
 			Terms termsUrl = user.getAggregations().get(fieldNames.get(1) + AGGS_SUFFIX);
 			if (termsUrl == null || termsUrl.getBuckets().size() == 0) {
+				LOGGER.error("Url is null");
 				return false;
 			}
 
 			for (Terms.Bucket url : termsUrl.getBuckets()) {
 				Terms termsTime = url.getAggregations().get(fieldNames.get(2) + AGGS_SUFFIX);
 				if (termsTime == null || termsTime.getBuckets().size() == 0) {
+					LOGGER.error("Time stamp is null");
 					return false;
 				}
 
@@ -174,7 +261,12 @@ public class UserActivityService implements IUserActivityService, Job {
 				}
 			}
 		}
-
+		// TODO need to consider
+		/*
+		 * if (!deleteAllDocuments(client, indexName)) { throw new
+		 * DataIntegrityViolationException("Rollback data because elatics search can not delete documents"
+		 * ); }
+		 */
 		return true;
 	}
 
@@ -231,7 +323,7 @@ public class UserActivityService implements IUserActivityService, Job {
 		}
 		try {
 			List<String> fieldNames = Stream.of(USER_ID, URL, TIME_STAMP).collect(Collectors.toList());
-			if (!saveDocument(client, INDEX_NAME, fieldNames)) {
+			if (!saveUserActivitesByGroupby(client, INDEX_NAME, fieldNames)) {
 				LOGGER.error("Failed to save data");
 				return;
 			}
