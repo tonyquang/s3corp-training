@@ -8,6 +8,6 @@ public interface Constant {
     String EMAIL_CONTENT = "You had access to Facebook over allow time, please stop and let back to your work. Regard!";
 
     // Every day at 12h and 16h
-    String CRONJOB_EXPRESSION = "0/10 0/1 * 1/1 * ? *";
+    String CRONJOB_EXPRESSION = "0 0 12,16 ? * *";
     String GROUP_ID = "quangbui";
 }
