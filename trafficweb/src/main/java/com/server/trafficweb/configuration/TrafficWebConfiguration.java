@@ -1,3 +1,4 @@
+
 package com.server.trafficweb.configuration;
 
 import java.sql.SQLException;

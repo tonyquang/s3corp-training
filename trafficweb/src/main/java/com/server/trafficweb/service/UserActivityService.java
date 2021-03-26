@@ -54,7 +54,6 @@ public class UserActivityService implements IUserActivityService, Job {
 	private String USER_ID = "user_id";
 	private String URL = "url";
 	private String TIME_STAMP = "@timestamp";
-	private String INDEX_NAME = "proxyinfo";
 
 	@Autowired
 	private UserActivityDBRepo activityDBRepo;
@@ -261,7 +260,6 @@ public class UserActivityService implements IUserActivityService, Job {
 				}
 			}
 		}
-		// TODO need to consider
 		/*
 		 * if (!deleteAllDocuments(client, indexName)) { throw new
 		 * DataIntegrityViolationException("Rollback data because elatics search can not delete documents"
@@ -323,7 +321,7 @@ public class UserActivityService implements IUserActivityService, Job {
 		}
 		try {
 			List<String> fieldNames = Stream.of(USER_ID, URL, TIME_STAMP).collect(Collectors.toList());
-			if (!saveUserActivitesByGroupby(client, INDEX_NAME, fieldNames)) {
+			if (!saveUserActivitesByGroupby(client, IConfigConstants.INDEX_NAME, fieldNames)) {
 				LOGGER.error("Failed to save data");
 				return;
 			}
