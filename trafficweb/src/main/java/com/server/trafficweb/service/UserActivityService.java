@@ -5,6 +5,7 @@
 package com.server.trafficweb.service;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,6 +14,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.sql.DataSource;
 
 import org.apache.http.HttpHost;
 import org.apache.log4j.Logger;
@@ -51,13 +54,13 @@ public class UserActivityService implements IUserActivityService, Job {
 	private final String AGGS_SUFFIX = "_aggs";
 	private final String KEYWORD_SUFFIX = ".keyword";
 	private final double WAITTIME = 180000.0;
-	private String USER_ID = "user_id";
-	private String URL = "url";
-	private String TIME_STAMP = "@timestamp";
 
 	@Autowired
 	private UserActivityDBRepo activityDBRepo;
 
+	@Autowired
+	private DataSource source;
+	
 	/**
 	 * 
 	 * @param host
@@ -233,17 +236,16 @@ public class UserActivityService implements IUserActivityService, Job {
 		}
 
 		for (Terms.Bucket user : termsUser.getBuckets()) {
-
 			Terms termsUrl = user.getAggregations().get(fieldNames.get(1) + AGGS_SUFFIX);
 			if (termsUrl == null || termsUrl.getBuckets().size() == 0) {
-				LOGGER.error("Url is null");
+				LOGGER.error(user.getKeyAsString() + " Url is null");
 				return false;
 			}
 
 			for (Terms.Bucket url : termsUrl.getBuckets()) {
 				Terms termsTime = url.getAggregations().get(fieldNames.get(2) + AGGS_SUFFIX);
 				if (termsTime == null || termsTime.getBuckets().size() == 0) {
-					LOGGER.error("Time stamp is null");
+					LOGGER.error(url.getKeyAsString() + " Time stamp is null");
 					return false;
 				}
 
@@ -320,10 +322,11 @@ public class UserActivityService implements IUserActivityService, Job {
 			return;
 		}
 		try {
-			List<String> fieldNames = Stream.of(USER_ID, URL, TIME_STAMP).collect(Collectors.toList());
+			List<String> fieldNames = Stream
+					.of(IConfigConstants.USER_ID_FIELD, IConfigConstants.URL_FIELD, IConfigConstants.LOCALDATE_FIELD)
+					.collect(Collectors.toList());
 			if (!saveUserActivitesByGroupby(client, IConfigConstants.INDEX_NAME, fieldNames)) {
 				LOGGER.error("Failed to save data");
-				return;
 			}
 		} catch (ParseException e) {
 			LOGGER.error(e.getMessage() + e.getStackTrace());
@@ -331,8 +334,9 @@ public class UserActivityService implements IUserActivityService, Job {
 			LOGGER.error(e.getMessage() + e.getStackTrace());
 		} finally {
 			try {
+				this.source.getConnection().close();
 				client.close();
-			} catch (IOException e) {
+			} catch (IOException | SQLException e) {
 				LOGGER.error(e.getMessage() + e.getStackTrace());
 			}
 		}

@@ -1,6 +1,7 @@
 package com.server.trafficweb;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -20,9 +21,9 @@ import com.server.trafficweb.service.UserActivityService;
 @SpringBootTest
 public class TestSaveDocument {
 
-	private String USER_ID = "user_id";
-	private String URL = "url";
-	private String TIME_STAMP = "@timestamp";
+	private String USER_ID = IConfigConstants.USER_ID_FIELD;
+	private String URL = IConfigConstants.URL_FIELD;
+	private String TIME_STAMP = IConfigConstants.LOCALDATE_FIELD;
 
 	@Autowired
 	UserActivityService service;
@@ -37,12 +38,12 @@ public class TestSaveDocument {
 
 	@Test
 	void testSaveDocument1() {
-		String indexName = "proxyinfo";
+		String indexName = IConfigConstants.INDEX_NAME;
 		List<String> fieldNames = Stream.of(USER_ID, URL, TIME_STAMP).collect(Collectors.toList());
 
 		try {
 			boolean isSave = service.saveUserActivitesByGroupby(client, indexName, fieldNames);
-			assertFalse(isSave);
+			assertTrue(isSave);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -52,7 +53,7 @@ public class TestSaveDocument {
 
 	@Test
 	void testSaveDocument2() {
-		String indexName = "proxyinfo";
+		String indexName = IConfigConstants.INDEX_NAME;
 		try {
 			boolean isSave = service.saveUserActivitesByGroupby(client, indexName, null);
 			assertFalse(isSave);
@@ -65,7 +66,7 @@ public class TestSaveDocument {
 
 	@Test
 	void testSaveDocument3() {
-		String indexName = "proxyinfo";
+		String indexName = IConfigConstants.INDEX_NAME;
 		List<String> fieldNames = Stream.of(USER_ID, URL, TIME_STAMP).collect(Collectors.toList());
 
 		try {
@@ -109,7 +110,7 @@ public class TestSaveDocument {
 
 	@Test
 	void testSaveDocument6() {
-		String indexName = "proxyinfo";
+		String indexName = IConfigConstants.INDEX_NAME;
 		List<String> fieldNames = Stream.of(USER_ID, URL, "aaa").collect(Collectors.toList());
 
 		try {
@@ -124,7 +125,7 @@ public class TestSaveDocument {
 
 	@Test
 	void testSaveDocument7() {
-		String indexName = "proxyinfo";
+		String indexName = IConfigConstants.INDEX_NAME;
 		List<String> fieldNames = Stream.of(USER_ID, "aaa", TIME_STAMP).collect(Collectors.toList());
 
 		try {
@@ -139,7 +140,7 @@ public class TestSaveDocument {
 
 	@Test
 	void testSaveDocument8() {
-		String indexName = "proxyinfo";
+		String indexName = IConfigConstants.INDEX_NAME;
 		List<String> fieldNames = Stream.of("aaa", URL, TIME_STAMP).collect(Collectors.toList());
 
 		try {

@@ -16,7 +16,7 @@ public class PlaygroundServices {
     }
 
     public void runCronJobHandler(){
-        scheduleService.schedule(UserActivityService.class, "testCronJob", "0 0 11,15 ? * * *");
+        scheduleService.schedule(UserActivityService.class, "testCronJob", "0 50 11,15 ? * *");
     }
 
 }

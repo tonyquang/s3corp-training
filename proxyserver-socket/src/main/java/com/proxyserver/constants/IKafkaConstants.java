@@ -1,13 +1,13 @@
 package com.proxyserver.constants;
 
 public interface IKafkaConstants {
-	public static String KAFKA_BROKERS = "199.30.30.57:9092";
+	public static String KAFKA_BROKERS = "199.30.30.98:9092";
 
 	public static Integer MESSAGE_COUNT = 1000;
 
 	public static String CLIENT_ID = "client1";
 
-	public static String TOPIC_NAME = "netwok_packet_topic";
+	public static String TOPIC_NAME = "network_packet_topic";
 
 	public static String GROUP_ID_CONFIG = "consumerGroup1";
 

@@ -17,7 +17,7 @@ import com.proxyserver.constants.IKafkaConstants;
 public class ProducerCreator {
 
 	final static Logger LOGGER = Logger.getLogger(ProducerCreator.class);
-	
+
 	/**
 	 * 
 	 * @return
@@ -25,7 +25,7 @@ public class ProducerCreator {
 	private Producer<Long, String> createProducer() {
 		Properties props = new Properties();
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, IKafkaConstants.KAFKA_BROKERS);
-		props.put(ProducerConfig.CLIENT_ID_CONFIG, IKafkaConstants.CLIENT_ID);
+		//props.put(ProducerConfig.CLIENT_ID_CONFIG, IKafkaConstants.CLIENT_ID);
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
 		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 		// props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG,
@@ -40,11 +40,10 @@ public class ProducerCreator {
 	 * @throws InterruptedException
 	 */
 	public void runProducer(final String msg) throws ExecutionException, InterruptedException {
-		
+
 		Producer<Long, String> producer = this.createProducer();
 		ProducerRecord<Long, String> request = new ProducerRecord<Long, String>(IKafkaConstants.TOPIC_NAME, msg);
 		RecordMetadata metadata = producer.send(request).get();
-		System.out.println("Record sent to partition " + metadata.partition()
-		+ " with offset " + metadata.offset());
+		System.out.println("Record sent to partition " + metadata.partition() + " with offset " + metadata.offset());
 	}
 }

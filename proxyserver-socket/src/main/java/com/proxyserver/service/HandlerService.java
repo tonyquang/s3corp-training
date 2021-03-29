@@ -47,8 +47,9 @@ public class HandlerService extends Thread {
 				if (!request.contains(" api.") && !request.contains(" apis.") && !request.contains(" apps.")
 						&& !request.contains(" azwcus1-client-s.") && !request.contains(" adservice.")) {
 					String url = request.substring(request.indexOf(" "), request.indexOf(":"));
+					String username = System.getProperty("user.name");
 
-					final String msg = " {\"user_id\":\"" + addr.getHostName() + "\", \"url\":\"" + url + "\"} ";
+					final String msg = " {\"user_id\":\"" + username + "\", \"url\":\"" + url + "\"} ";
 					producerCreator.runProducer(msg);
 					LOGGER.info("Message: " + msg);
 				}
