@@ -12,12 +12,7 @@ public class DBConfig {
 
     @Bean
     public DataSource dataSource(){
-        try {
-            return CommonDataSource.getDataSource();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return null;
+        return CommonDataSource.getHikariDataSource();
     }
 
 }

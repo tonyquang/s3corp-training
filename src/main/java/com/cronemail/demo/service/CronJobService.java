@@ -40,26 +40,26 @@ public class CronJobService implements Job {
 
     private void sendMail(String timeStamp) {
         log.info(timeStamp);
-//        List<UserActivity> usersActivity = userActivityServices
-//                .selectUserActivityList(Constant.HOST_NAME,
-//                        Constant.MAX_TIME_ACCESS_FB,
-//                        timeStamp);
-//        if (usersActivity.isEmpty())
-//            return;
-//
-//        List<String> emails = new ArrayList<>();
-//        for (UserActivity urAc : usersActivity) {
-//            String userID = usersServices.selectEmailFromUserID(urAc.getUserId());
-//            if(userID.isEmpty())
-//                continue;
-//            emails.add(usersServices.selectEmailFromUserID(urAc.getUserId()));
-//        }
-//
-//        emailServices.sendMail(EmailModel.builder()
-//                .email(emails)
-//                .content(Constant.EMAIL_CONTENT)
-//                .subject(Constant.EMAIL_SUBJECT)
-//                .build());
+        List<UserActivity> usersActivity = userActivityServices
+                .selectUserActivityList(Constant.HOST_NAME,
+                        Constant.MAX_TIME_ACCESS_FB,
+                        timeStamp);
+        if (usersActivity.isEmpty())
+            return;
+
+        List<String> emails = new ArrayList<>();
+        for (UserActivity urAc : usersActivity) {
+            String userID = usersServices.selectEmailFromUserID(urAc.getUserId());
+            if(userID.isEmpty())
+                continue;
+            emails.add(usersServices.selectEmailFromUserID(urAc.getUserId()));
+        }
+
+        emailServices.sendMail(EmailModel.builder()
+                .email(emails)
+                .content(Constant.EMAIL_CONTENT)
+                .subject(Constant.EMAIL_SUBJECT)
+                .build());
     }
 
 }
