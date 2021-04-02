@@ -1,0 +1,9 @@
+<service>
+    <id>CronJobEmailService</id>
+    <name>CronJobEmailService</name>
+    <description>This runs Spring Boot as a Service.</description>
+    <env name="CRONJOBEMAILSERVICE_HOME" value="%BASE%"/>
+    <executable>java</executable>
+    <arguments>-Xmx256m -jar "%BASE%\tracking-cronjob-0.0.1-SNAPSHOT.jar"</arguments>
+    <logmode>rotate</logmode>
+</service>

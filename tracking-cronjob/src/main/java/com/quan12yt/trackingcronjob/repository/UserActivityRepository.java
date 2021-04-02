@@ -14,8 +14,11 @@ public interface UserActivityRepository extends JpaRepository<UserActivity, User
 
     @Query(value = "select u.user_id \n" +
             "from user_activity u\n" +
-            "where (u.url = :url and u.date = :date) and u.access_count >10 ", nativeQuery = true)
+            "where (u.url = :url and u.date = :date) and u.count >10 ", nativeQuery = true)
     List<String> getViolatedUserByDateAndUrl(@Param("url") String url, @Param("date") String date);
 
-
+    @Query(value = "select *   \n" +
+            "from user_activity u\n" +
+            "where (u.url like %:url% and u.user_id = :userid) and u.date like %:month%", nativeQuery = true)
+    List<UserActivity> findByUserIdAndUrlAndMonth(@Param("url") String url, @Param("userid") String userId, @Param("month") String month);
 }

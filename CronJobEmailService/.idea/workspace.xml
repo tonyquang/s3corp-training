@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="fd3ef850-ff34-479a-bed9-b26358fadd71" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/TrackingCronjobApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/TrackingCronjobApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/config/EmailConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/config/EmailConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/config/QuartConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/config/QuartConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/controller/ScheduleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/controller/ScheduleController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/job/UpdateActivityJob.java" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/job/UpdateActivityJob.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/model/UserActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/model/UserActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/repository/UserActivityRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/repository/UserActivityRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/service/JobService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/service/JobService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/service/imp/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/service/imp/EmailService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/service/imp/JobServiceImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/service/imp/JobServiceImp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/service/imp/UserActivityServiceImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/service/imp/UserActivityServiceImp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/util/JobUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/util/JobUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/util/ValueConstant.java" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/src/main/java/com/quan12yt/trackingcronjob/util/ValueConstant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/src/test/java/com/quan12yt/trackingcronjob/unittest/EmailServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/src/test/java/com/quan12yt/trackingcronjob/unittest/EmailServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/src/test/java/com/quan12yt/trackingcronjob/unittest/ExampleJob.java" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/src/test/java/com/quan12yt/trackingcronjob/unittest/ExampleJob.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/src/test/java/com/quan12yt/trackingcronjob/unittest/ScheduleServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/src/test/java/com/quan12yt/trackingcronjob/unittest/ScheduleServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tracking-cronjob/src/test/java/com/quan12yt/trackingcronjob/unittest/UserActivityServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../tracking-cronjob/src/test/java/com/quan12yt/trackingcronjob/unittest/UserActivityServiceTest.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1qSw0leDYAiusTXAd8pI4TEyizg" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fd3ef850-ff34-479a-bed9-b26358fadd71" name="Default Changelist" comment="" />
+      <created>1617086077518</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1617086077518</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

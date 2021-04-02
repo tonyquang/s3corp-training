@@ -24,6 +24,7 @@ public class UserActivity implements Serializable {
     private String date;
     @Column(name = "total_time")
     private Long totalTime;
-    @Column(name = "access_count")
-    private Integer accessCount;
+    @Column(name = "count")
+    private Integer count;
 }
+

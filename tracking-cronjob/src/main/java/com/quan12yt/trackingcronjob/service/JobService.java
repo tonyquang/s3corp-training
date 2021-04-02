@@ -7,9 +7,9 @@ public interface JobService {
 
     void runSendEmailJoh();
 
-    void runUpdateActivityJob(UserActivity userActivity, Integer count, Integer time);
-
-    void stopJob(String job) throws SchedulerException;
-
-    void stop();
+//    void runUpdateActivityJob(UserActivity userActivity, Integer count, Integer time);
+//
+//    void stopJob(String job) throws SchedulerException;
+//
+//    void stop();
 }

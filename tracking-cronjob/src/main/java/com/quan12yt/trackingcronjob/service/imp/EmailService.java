@@ -37,7 +37,7 @@ public class EmailService {
                 emailSender.send(message);
                 logger.info("Send warning email succeed to email : " + t);
             } catch (Exception e) {
-                logger.debug(e.getMessage());
+                logger.info(e.getMessage());
                 throw new SendEmailFailedException("Failed to send warning email");
             }
         });

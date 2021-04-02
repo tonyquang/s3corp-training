@@ -1,0 +1,127 @@
+2021-03-25 10:18:35,363 DEBUG - Starting WinSW in console mode
+2021-03-25 10:18:37,394 DEBUG - Starting WinSW in console mode
+2021-03-25 10:18:37,432 INFO  - Uninstalling service 'CronJobEmailService (CronJobEmailService)'...
+2021-03-25 10:18:37,449 INFO  - Service 'CronJobEmailService (CronJobEmailService)' was uninstalled successfully.
+2021-03-25 10:18:42,314 DEBUG - Starting WinSW in console mode
+2021-03-25 10:18:44,888 DEBUG - Starting WinSW in console mode
+2021-03-25 10:18:44,926 INFO  - Installing service 'CronJobEmailService (CronJobEmailService)'...
+2021-03-25 10:18:44,956 INFO  - Service 'CronJobEmailService (CronJobEmailService)' was installed successfully.
+2021-03-25 10:18:50,183 DEBUG - Starting WinSW in console mode
+2021-03-25 10:18:52,769 DEBUG - Starting WinSW in console mode
+2021-03-25 10:18:52,945 INFO  - Starting java -Xmx256m -jar "C:\Users\quan.pham\Downloads\CronJobEmailService\tracking-cronjob-0.0.1-SNAPSHOT.jar"
+2021-03-25 10:18:53,003 INFO  - Started process 12312
+2021-03-25 10:18:53,027 DEBUG - Forwarding logs of the process System.Diagnostics.Process (java) to WinSW.SizeBasedRollingLogAppender
+2021-03-25 10:18:54,036 INFO  - Stopping CronJobEmailService
+2021-03-25 10:18:54,038 DEBUG - ProcessKill 12312
+2021-03-25 10:18:54,040 DEBUG - Stopping process 12312...
+2021-03-25 10:18:54,046 WARN  - Failed to attach to console. Access is denied.
+2021-03-25 10:18:54,051 DEBUG - Process 12312 terminated.
+2021-03-25 10:18:54,065 INFO  - Finished CronJobEmailService
+2021-03-25 10:20:14,158 DEBUG - Starting WinSW in service mode
+2021-03-25 10:20:14,336 INFO  - Starting java -Xmx256m -jar "C:\Users\quan.pham\Downloads\CronJobEmailService\tracking-cronjob-0.0.1-SNAPSHOT.jar"
+2021-03-25 10:20:14,380 INFO  - Started process 11932
+2021-03-25 10:20:14,405 DEBUG - Forwarding logs of the process System.Diagnostics.Process (java) to WinSW.SizeBasedRollingLogAppender
+2021-03-25 10:20:26,631 DEBUG - Starting WinSW in console mode
+2021-03-25 10:20:29,460 DEBUG - Starting WinSW in console mode
+2021-03-25 10:20:29,633 INFO  - Starting java -Xmx256m -jar "C:\Users\quan.pham\Downloads\CronJobEmailService\tracking-cronjob-0.0.1-SNAPSHOT.jar"
+2021-03-25 10:20:29,682 INFO  - Started process 8408
+2021-03-25 10:20:29,705 DEBUG - Forwarding logs of the process System.Diagnostics.Process (java) to WinSW.SizeBasedRollingLogAppender
+2021-03-25 10:20:32,118 INFO  - Stopping CronJobEmailService
+2021-03-25 10:20:32,163 DEBUG - ProcessKill 8408
+2021-03-25 10:20:44,381 DEBUG - Starting WinSW in console mode
+2021-03-25 10:20:44,427 FATAL - Unhandled exception
+System.Exception: Unknown command: st
+   at WinSW.Program.Run(String[] argsArray, IServiceConfig config)
+   at WinSW.Program.Main(String[] args)
+2021-03-25 10:20:53,207 DEBUG - Starting WinSW in console mode
+2021-03-25 10:21:12,194 DEBUG - Starting WinSW in console mode
+2021-03-25 10:21:14,771 DEBUG - Starting WinSW in console mode
+2021-03-25 10:21:14,813 INFO  - Stopping service 'CronJobEmailService (CronJobEmailService)'...
+2021-03-25 10:21:14,827 INFO  - Service 'CronJobEmailService (CronJobEmailService)' stopped successfully.
+2021-03-25 10:21:14,830 DEBUG - ProcessKill 11932
+2021-03-25 10:21:14,833 DEBUG - Stopping process 11932...
+2021-03-25 10:21:15,203 DEBUG - Process 11932 canceled with code 130.
+2021-03-25 10:21:15,207 INFO  - Finished CronJobEmailService
+2021-03-25 10:21:19,164 DEBUG - Starting WinSW in console mode
+2021-03-25 10:21:21,516 DEBUG - Starting WinSW in console mode
+2021-03-25 10:21:21,558 INFO  - Starting service 'CronJobEmailService (CronJobEmailService)'...
+2021-03-25 10:21:22,081 DEBUG - Starting WinSW in service mode
+2021-03-25 10:21:22,116 INFO  - Service 'CronJobEmailService (CronJobEmailService)' started successfully.
+2021-03-25 10:21:22,257 INFO  - Starting java -Xmx256m -jar "C:\Users\quan.pham\Downloads\CronJobEmailService\tracking-cronjob-0.0.1-SNAPSHOT.jar"
+2021-03-25 10:21:22,298 INFO  - Started process 6576
+2021-03-25 10:21:22,322 DEBUG - Forwarding logs of the process System.Diagnostics.Process (java) to WinSW.SizeBasedRollingLogAppender
+2021-03-25 10:24:06,940 DEBUG - Starting WinSW in console mode
+2021-03-25 10:24:09,071 DEBUG - Starting WinSW in console mode
+2021-03-25 10:24:09,116 INFO  - Stopping service 'CronJobEmailService (CronJobEmailService)'...
+2021-03-25 10:24:09,129 INFO  - Stopping CronJobEmailService
+2021-03-25 10:24:09,130 DEBUG - ProcessKill 6576
+2021-03-25 10:24:09,132 DEBUG - Stopping process 6576...
+2021-03-25 10:24:09,788 DEBUG - Process 6576 canceled with code 130.
+2021-03-25 10:24:09,793 INFO  - Finished CronJobEmailService
+2021-03-25 10:24:09,888 INFO  - Starting service 'CronJobEmailService (CronJobEmailService)'...
+2021-03-25 10:24:10,398 DEBUG - Starting WinSW in service mode
+2021-03-25 10:24:10,567 INFO  - Starting java -Xmx256m -jar "C:\Users\quan.pham\Downloads\CronJobEmailService\tracking-cronjob-0.0.1-SNAPSHOT.jar"
+2021-03-25 10:24:10,610 INFO  - Started process 12784
+2021-03-25 10:24:10,634 DEBUG - Forwarding logs of the process System.Diagnostics.Process (java) to WinSW.SizeBasedRollingLogAppender
+2021-03-25 10:24:10,683 INFO  - Service 'CronJobEmailService (CronJobEmailService)' restarted successfully.
+2021-03-25 10:27:24,906 INFO  - Stopping CronJobEmailService
+2021-03-25 10:27:24,908 DEBUG - ProcessKill 12784
+2021-03-25 10:27:24,910 DEBUG - Stopping process 12784...
+2021-03-25 10:27:25,486 DEBUG - Process 12784 canceled with code 130.
+2021-03-25 10:27:25,493 INFO  - Finished CronJobEmailService
+2021-03-25 10:51:28,761 DEBUG - Starting WinSW in console mode
+2021-03-25 10:51:31,127 DEBUG - Starting WinSW in console mode
+2021-03-25 10:51:31,164 INFO  - Uninstalling service 'CronJobEmailService (CronJobEmailService)'...
+2021-03-25 10:51:31,176 INFO  - Service 'CronJobEmailService (CronJobEmailService)' was uninstalled successfully.
+2021-03-25 10:51:37,518 DEBUG - Starting WinSW in console mode
+2021-03-25 10:51:39,980 DEBUG - Starting WinSW in console mode
+2021-03-25 10:51:40,020 INFO  - Installing service 'CronJobEmailService (CronJobEmailService)'...
+2021-03-25 10:51:40,056 INFO  - Service 'CronJobEmailService (CronJobEmailService)' was installed successfully.
+2021-03-25 10:51:52,656 DEBUG - Starting WinSW in console mode
+2021-03-25 10:51:54,774 DEBUG - Starting WinSW in console mode
+2021-03-25 10:51:54,815 INFO  - Starting service 'CronJobEmailService (CronJobEmailService)'...
+2021-03-25 10:51:55,405 DEBUG - Starting WinSW in service mode
+2021-03-25 10:51:55,441 INFO  - Service 'CronJobEmailService (CronJobEmailService)' started successfully.
+2021-03-25 10:51:55,582 INFO  - Starting java -Xmx256m -jar "C:\Users\quan.pham\Desktop\s3-cronjob-email\CronJobEmailService\tracking-cronjob-0.0.1-SNAPSHOT.jar"
+2021-03-25 10:51:55,620 INFO  - Started process 4168
+2021-03-25 10:51:55,643 DEBUG - Forwarding logs of the process System.Diagnostics.Process (java) to WinSW.SizeBasedRollingLogAppender
+2021-03-25 10:53:57,443 INFO  - Stopping CronJobEmailService
+2021-03-25 10:53:57,444 DEBUG - ProcessKill 4168
+2021-03-25 10:53:57,452 DEBUG - Stopping process 4168...
+2021-03-25 10:53:58,208 DEBUG - Process 4168 canceled with code 130.
+2021-03-25 10:53:58,222 INFO  - Finished CronJobEmailService
+2021-03-25 11:14:02,229 DEBUG - Starting WinSW in console mode
+2021-03-25 11:14:04,368 DEBUG - Starting WinSW in console mode
+2021-03-25 11:14:04,406 INFO  - Uninstalling service 'CronJobEmailService (CronJobEmailService)'...
+2021-03-25 11:14:04,418 INFO  - Service 'CronJobEmailService (CronJobEmailService)' was uninstalled successfully.
+2021-03-25 11:14:07,952 DEBUG - Starting WinSW in console mode
+2021-03-25 11:14:10,104 DEBUG - Starting WinSW in console mode
+2021-03-25 11:14:10,144 INFO  - Installing service 'CronJobEmailService (CronJobEmailService)'...
+2021-03-25 11:14:10,177 INFO  - Service 'CronJobEmailService (CronJobEmailService)' was installed successfully.
+2021-03-25 11:14:19,450 DEBUG - Starting WinSW in service mode
+2021-03-25 11:14:19,621 INFO  - Starting java -Xmx256m -jar "C:\Users\quan.pham\Desktop\s3-cronjob-email\CronJobEmailService\tracking-cronjob-0.0.1-SNAPSHOT.jar"
+2021-03-25 11:14:19,665 INFO  - Started process 8708
+2021-03-25 11:14:19,688 DEBUG - Forwarding logs of the process System.Diagnostics.Process (java) to WinSW.SizeBasedRollingLogAppender
+2021-03-25 11:43:09,042 INFO  - Stopping CronJobEmailService
+2021-03-25 11:43:09,042 DEBUG - ProcessKill 8708
+2021-03-25 11:43:09,048 DEBUG - Stopping process 8708...
+2021-03-25 11:43:09,431 DEBUG - Process 8708 canceled with code 130.
+2021-03-25 11:43:09,442 INFO  - Finished CronJobEmailService
+2021-03-25 13:48:33,448 DEBUG - Starting WinSW in service mode
+2021-03-25 13:48:33,885 INFO  - Starting java -Xmx256m -jar "C:\Users\quan.pham\Desktop\s3-cronjob-email\CronJobEmailService\tracking-cronjob-0.0.1-SNAPSHOT.jar"
+2021-03-25 13:48:34,170 INFO  - Started process 5068
+2021-03-25 13:48:34,231 DEBUG - Forwarding logs of the process System.Diagnostics.Process (java) to WinSW.SizeBasedRollingLogAppender
+2021-03-25 15:36:19,878 INFO  - Stopping CronJobEmailService
+2021-03-25 15:36:19,883 DEBUG - ProcessKill 5068
+2021-03-25 15:36:19,893 DEBUG - Stopping process 5068...
+2021-03-25 15:36:20,195 DEBUG - Process 5068 canceled with code 130.
+2021-03-25 15:36:20,204 INFO  - Finished CronJobEmailService
+2021-03-26 11:53:12,229 DEBUG - Starting WinSW in service mode
+2021-03-26 11:53:12,406 INFO  - Starting java -Xmx256m -jar "C:\Users\quan.pham\Desktop\s3-cronjob-email\CronJobEmailService\tracking-cronjob-0.0.1-SNAPSHOT.jar"
+2021-03-26 11:53:12,448 INFO  - Started process 12372
+2021-03-26 11:53:12,473 DEBUG - Forwarding logs of the process System.Diagnostics.Process (java) to WinSW.SizeBasedRollingLogAppender
+2021-03-26 11:53:19,645 INFO  - Stopping CronJobEmailService
+2021-03-26 11:53:19,646 DEBUG - ProcessKill 12372
+2021-03-26 11:53:19,648 DEBUG - Stopping process 12372...
+2021-03-26 11:53:27,085 DEBUG - Process 12372 canceled with code 130.
+2021-03-26 11:53:27,118 INFO  - Finished CronJobEmailService

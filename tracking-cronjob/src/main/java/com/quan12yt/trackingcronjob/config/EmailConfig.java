@@ -2,10 +2,12 @@ package com.quan12yt.trackingcronjob.config;
 
 import com.quan12yt.trackingcronjob.util.ValueConstant;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.SimpleMailMessage;
 
 @Configuration
+@ComponentScan("com.quan12yt.trackingcronjob.util")
 public class EmailConfig {
     @Bean
     public SimpleMailMessage emailTemplate()

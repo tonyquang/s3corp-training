@@ -8,9 +8,9 @@ public class DateUtils {
     private DateUtils(){}
 
     public static String convertDateToString(Date date) {
-        if (date != null) {
-            return new SimpleDateFormat("MM-dd-yyyy").format(date);
+        if (date == null) {
+            return "";
         }
-        return "";
+        return new SimpleDateFormat("MM-dd-yyyy").format(date);
     }
 }
