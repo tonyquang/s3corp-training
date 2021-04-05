@@ -73,7 +73,7 @@
 		<dependency>
 			<groupId>com.github.quan12yt</groupId>
 			<artifactId>s3training-common-dbconnect</artifactId>
-			<version>49312478b8</version>
+			<version>f4852d7880</version>
 		</dependency>
 
 	</dependencies>

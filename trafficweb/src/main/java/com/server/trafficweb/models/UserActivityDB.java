@@ -27,7 +27,7 @@ public class UserActivityDB {
 	private String url;
 	@Id
 	private String date;
-	
+
 	private int count;
 	private double total_time;
 }

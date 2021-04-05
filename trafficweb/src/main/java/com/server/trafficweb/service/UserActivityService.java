@@ -1,16 +1,16 @@
-/**
- * 
- */
-
 package com.server.trafficweb.service;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,13 +24,17 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -54,13 +58,44 @@ public class UserActivityService implements IUserActivityService, Job {
 	private final String AGGS_SUFFIX = "_aggs";
 	private final String KEYWORD_SUFFIX = ".keyword";
 	private final double WAITTIME = 180000.0;
+	private String sCONNECT = "CONNECT";
 
 	@Autowired
 	private UserActivityDBRepo activityDBRepo;
 
 	@Autowired
 	private DataSource source;
-	
+
+	/**
+	 * 
+	 * @param client
+	 * @param indexName
+	 * @param url
+	 * @param date
+	 * @param userId
+	 * @param fieldNames
+	 * @return
+	 * @throws IOException
+	 */
+	public SearchHit[] findByField(final RestHighLevelClient client, final String indexName, final String url,
+			String date, String userId, final List<String> fieldNames) throws IOException {
+
+		if (null == client || null == indexName || indexName.isEmpty() || fieldNames == null || url.isEmpty()
+				|| date.isEmpty() || userId.isEmpty()) {
+			return null;
+		}
+		SearchRequest searchRequest = new SearchRequest(indexName);
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		QueryBuilder queryBuilder = QueryBuilders.boolQuery()
+				.must(QueryBuilders.matchPhraseQuery(fieldNames.get(0), userId))
+				.must(QueryBuilders.matchPhraseQuery(fieldNames.get(1), url))
+				.must(QueryBuilders.matchPhraseQuery(fieldNames.get(2), date));
+		searchSourceBuilder.query(queryBuilder).sort(new FieldSortBuilder(fieldNames.get(2)).order(SortOrder.ASC));
+		searchRequest.source(searchSourceBuilder);
+		SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+		return searchResponse.getHits().getHits();
+	}
+
 	/**
 	 * 
 	 * @param host
@@ -88,10 +123,10 @@ public class UserActivityService implements IUserActivityService, Job {
 									.field(fieldNames.get(2)).size(sizes.get(2)))
 							.size(sizes.get(1)))
 					.size(sizes.get(0));
+
 		} catch (Exception e) {
 			return null;
 		}
-
 	}
 
 	/**
@@ -104,7 +139,6 @@ public class UserActivityService implements IUserActivityService, Job {
 	 */
 	public SearchResponse getSearchResponseByGroupbyFields(final RestHighLevelClient client, final String indexName,
 			final List<String> fieldNames) throws IOException {
-
 		if (null == client || null == indexName || indexName.isEmpty() || fieldNames == null) {
 			return null;
 		}
@@ -132,12 +166,12 @@ public class UserActivityService implements IUserActivityService, Job {
 	 * @return
 	 * @throws IOException
 	 */
-	public SearchResponse getSearchResponseByAll(final RestHighLevelClient client, final String indexName)
+	public SearchResponse getSearchResponseByOneDocument(final RestHighLevelClient client, final String indexName)
 			throws IOException {
 		SearchRequest searchRequest = new SearchRequest(indexName);
 		searchRequest.searchType();
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+		searchSourceBuilder.query(QueryBuilders.matchAllQuery()).size(1);
 		searchRequest.source(searchSourceBuilder);
 		SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
 		LOGGER.info("Search respones: " + searchResponse);
@@ -152,8 +186,7 @@ public class UserActivityService implements IUserActivityService, Job {
 	 * @throws IOException
 	 */
 	public boolean isExistDocuments(final RestHighLevelClient client, final String indexName) throws IOException {
-		SearchResponse response = getSearchResponseByAll(client, indexName);
-
+		SearchResponse response = getSearchResponseByOneDocument(client, indexName);
 		if (null == response || response.getHits().getHits().length == 0) {
 			return false;
 		}
@@ -183,7 +216,6 @@ public class UserActivityService implements IUserActivityService, Job {
 		} catch (Exception e) {
 			return null;
 		}
-
 	}
 
 	/**
@@ -197,7 +229,6 @@ public class UserActivityService implements IUserActivityService, Job {
 		if (!isExistDocuments(client, indexName)) {
 			return false;
 		}
-
 		DeleteByQueryRequest request = new DeleteByQueryRequest(indexName);
 		request.setQuery(QueryBuilders.matchAllQuery());
 		BulkByScrollResponse response;
@@ -228,62 +259,84 @@ public class UserActivityService implements IUserActivityService, Job {
 			LOGGER.error("search response is null");
 			return false;
 		}
-
 		Terms termsUser = searchResponse.getAggregations().get(fieldNames.get(0) + AGGS_SUFFIX);
 		if (termsUser == null || termsUser.getBuckets().size() == 0) {
 			LOGGER.error("Users is null");
 			return false;
 		}
-
 		for (Terms.Bucket user : termsUser.getBuckets()) {
+			String sUser = user.getKeyAsString();
 			Terms termsUrl = user.getAggregations().get(fieldNames.get(1) + AGGS_SUFFIX);
 			if (termsUrl == null || termsUrl.getBuckets().size() == 0) {
-				LOGGER.error(user.getKeyAsString() + " Url is null");
+				LOGGER.error(sUser + " URL is null");
 				return false;
 			}
-
 			for (Terms.Bucket url : termsUrl.getBuckets()) {
-				Terms termsTime = url.getAggregations().get(fieldNames.get(2) + AGGS_SUFFIX);
-				if (termsTime == null || termsTime.getBuckets().size() == 0) {
-					LOGGER.error(url.getKeyAsString() + " Time stamp is null");
-					return false;
-				}
-
-				List<Double> times = new ArrayList<>();
-				for (Terms.Bucket time : termsTime.getBuckets()) {
-					times.add(toMilliseconds(time.getKeyAsString()));
-				}
-
-				UserActivityDB userActivity = saveUserActivity(getCurrentTime(), user.getKey().toString(),
-						url.getKey().toString(), countTimesTraffic(times), countTotalTime(times));
-				LOGGER.info("User activity: " + userActivity);
-				if (userActivity == null) {
-					return false;
+				String sUrl = url.getKeyAsString();
+				if (!sUrl.isEmpty() && sUrl.contains(sCONNECT)) {
+					Terms termsTime = url.getAggregations().get(fieldNames.get(2) + AGGS_SUFFIX);
+					if (termsTime == null || termsTime.getBuckets().size() == 0) {
+						LOGGER.error(sUrl + " Time stamp is null");
+						return false;
+					}
+					Set<String> days = new HashSet<>();
+					for (Terms.Bucket time : termsTime.getBuckets()) {
+						days.add(getDate(time.getKeyAsString()));
+					}
+					for (String day : days) {
+						List<Double> dates = new ArrayList<>();
+						SearchHit[] searchHits = findByField(client, indexName, sUrl, day, sUser, fieldNames);
+						if (null == searchHits || searchHits.length == 0) {
+							LOGGER.error("Not found data in Elastic Search");
+							return false;
+						}
+						for (SearchHit hit : searchHits) {
+							dates.add(toMilliseconds(hit.getSourceAsMap().get(fieldNames.get(2)).toString()));
+						}
+						UserActivityDB userActivity = saveUserActivity(day, sUser, sUrl, countTimesTraffic(dates),
+								countTotalTime(dates));
+						LOGGER.info("User activity: " + userActivity);
+						if (userActivity == null) {
+							return false;
+						}
+					}
 				}
 			}
 		}
-		/*
-		 * if (!deleteAllDocuments(client, indexName)) { throw new
-		 * DataIntegrityViolationException("Rollback data because elatics search can not delete documents"
-		 * ); }
-		 */
 		return true;
 	}
 
-	public String getCurrentTime() {
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-		Date date = new Date(System.currentTimeMillis());
-		return formatter.format(date);
+	/**
+	 * 
+	 * @param date
+	 * @return
+	 * @throws ParseException
+	 */
+	public String getDate(final String date) throws ParseException {
+		DateTimeFormatter fmDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		LocalDateTime result = LocalDateTime.parse(date, fmDateTime);
+		DateTimeFormatter fmDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		return result.format(fmDate);
 	}
 
-	private double toMilliseconds(final String myDate) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+	/**
+	 * 
+	 * @param myDate
+	 * @return
+	 * @throws ParseException
+	 */
+	public double toMilliseconds(final String myDate) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		Date date = sdf.parse(myDate);
-		long millis = date.getTime();
-		return millis;
+		return date.getTime();
 	}
 
-	private double MillisecondsToSecondS(double time) {
+	/**
+	 * 
+	 * @param time
+	 * @return
+	 */
+	public double MillisecondsToSecondS(final double time) {
 		return TimeUnit.MILLISECONDS.toSeconds((long) time);
 	}
 

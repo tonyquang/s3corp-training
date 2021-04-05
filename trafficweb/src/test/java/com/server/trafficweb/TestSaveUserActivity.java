@@ -1,12 +1,8 @@
 package com.server.trafficweb;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.server.trafficweb.models.UserActivityDB;
 import com.server.trafficweb.service.UserActivityService;
 
 @SpringBootTest
@@ -15,16 +11,16 @@ public class TestSaveUserActivity {
 	@Autowired
 	UserActivityService service;
 
-	@Test
-	void testSaveUserActivity1() {
-		String date = service.getCurrentTime();
-		String url = "stackoverflow.com";
-		String userid = "PC-NHUTTO$";
-		int count = 9;
-		double time = 10.0;
-		UserActivityDB user = service.saveUserActivity(date, userid, url, count, time);
-		assertEquals("PC-NHUTTO$", user.getUser_id());
-	}
+//	@Test
+//	void testSaveUserActivity1() {
+//		String date = service.getCurrentTime();
+//		String url = "stackoverflow.com";
+//		String userid = "PC-NHUTTO$";
+//		int count = 9;
+//		double time = 10.0;
+//		UserActivityDB user = service.saveUserActivity(date, userid, url, count, time);
+//		assertEquals("PC-NHUTTO$", user.getUser_id());
+//	}
 
 //	@Test
 //	void testSaveUserActivity2() {
