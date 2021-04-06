@@ -1,5 +1,6 @@
 package com.server.trafficweb.models;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -22,7 +23,8 @@ import lombok.NoArgsConstructor;
 public class UserActivityDB {
 
 	@Id
-	private String user_id;
+    @Column(name = "user_id")
+	private String userId;
 	@Id
 	private String url;
 	@Id

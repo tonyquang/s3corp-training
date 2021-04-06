@@ -17,4 +17,9 @@ public interface IConfigConstants {
 
 	public static String LOCALDATE_FIELD = "localdate";
 
+	public static int MAX_NUM_USER = 200;
+
+	public static int MAX_NUM_URL = 1000;
+
+	public static int MAX_NUM_TIMES_TRAFFIC = 100;
 }

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class MyKey implements Serializable {
 
 	private static final long serialVersionUID = 6533373800387091752L;
-	private String user_id;
+	private String userId;
 	private String url;
 	private String date;
 }

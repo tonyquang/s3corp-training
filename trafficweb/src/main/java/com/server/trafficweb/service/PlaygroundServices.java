@@ -18,5 +18,4 @@ public class PlaygroundServices {
     public void runCronJobHandler(){
         scheduleService.schedule(UserActivityService.class, "cronJobDB", "0 50 11,15 ? * *");
     }
-
 }

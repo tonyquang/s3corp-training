@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -26,8 +27,6 @@ import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.reindex.BulkByScrollResponse;
-import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
@@ -68,36 +67,6 @@ public class UserActivityService implements IUserActivityService, Job {
 
 	/**
 	 * 
-	 * @param client
-	 * @param indexName
-	 * @param url
-	 * @param date
-	 * @param userId
-	 * @param fieldNames
-	 * @return
-	 * @throws IOException
-	 */
-	public SearchHit[] findByField(final RestHighLevelClient client, final String indexName, final String url,
-			String date, String userId, final List<String> fieldNames) throws IOException {
-
-		if (null == client || null == indexName || indexName.isEmpty() || fieldNames == null || url.isEmpty()
-				|| date.isEmpty() || userId.isEmpty()) {
-			return null;
-		}
-		SearchRequest searchRequest = new SearchRequest(indexName);
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		QueryBuilder queryBuilder = QueryBuilders.boolQuery()
-				.must(QueryBuilders.matchPhraseQuery(fieldNames.get(0), userId))
-				.must(QueryBuilders.matchPhraseQuery(fieldNames.get(1), url))
-				.must(QueryBuilders.matchPhraseQuery(fieldNames.get(2), date));
-		searchSourceBuilder.query(queryBuilder).sort(new FieldSortBuilder(fieldNames.get(2)).order(SortOrder.ASC));
-		searchRequest.source(searchSourceBuilder);
-		SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
-		return searchResponse.getHits().getHits();
-	}
-
-	/**
-	 * 
 	 * @param host
 	 * @param port
 	 * @param protocol
@@ -123,7 +92,6 @@ public class UserActivityService implements IUserActivityService, Job {
 									.field(fieldNames.get(2)).size(sizes.get(2)))
 							.size(sizes.get(1)))
 					.size(sizes.get(0));
-
 		} catch (Exception e) {
 			return null;
 		}
@@ -137,25 +105,27 @@ public class UserActivityService implements IUserActivityService, Job {
 	 * @return
 	 * @throws IOException
 	 */
-	public SearchResponse getSearchResponseByGroupbyFields(final RestHighLevelClient client, final String indexName,
+	public SearchResponse groupByUserActs(final RestHighLevelClient client, final String indexName,
 			final List<String> fieldNames) throws IOException {
 		if (null == client || null == indexName || indexName.isEmpty() || fieldNames == null) {
 			return null;
 		}
-		List<Integer> sizes = Stream.of(200, 1000, 100).collect(Collectors.toList());
-		SearchRequest searchRequest = new SearchRequest(indexName);
-		searchRequest.searchType();
-
+		List<Integer> sizes = Stream
+				.of(IConfigConstants.MAX_NUM_USER, IConfigConstants.MAX_NUM_URL, IConfigConstants.MAX_NUM_TIMES_TRAFFIC)
+				.collect(Collectors.toList());
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(QueryBuilders.matchAllQuery());
 		AggregationBuilder aggregation = createAggregationBuilder(fieldNames, sizes);
 		if (aggregation == null) {
 			return null;
 		}
+
+		SearchRequest searchRequest = new SearchRequest(indexName);
+		searchRequest.searchType();
 		searchSourceBuilder.aggregation(aggregation);
 		searchRequest.source(searchSourceBuilder);
 		SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
-		LOGGER.info("Search respones: " + searchResponse);
+		LOGGER.info("Search respones after group by: " + searchResponse);
 		return searchResponse;
 	}
 
@@ -163,35 +133,32 @@ public class UserActivityService implements IUserActivityService, Job {
 	 * 
 	 * @param client
 	 * @param indexName
+	 * @param url
+	 * @param date
+	 * @param userId
+	 * @param fieldNames
 	 * @return
 	 * @throws IOException
 	 */
-	public SearchResponse getSearchResponseByOneDocument(final RestHighLevelClient client, final String indexName)
-			throws IOException {
-		SearchRequest searchRequest = new SearchRequest(indexName);
-		searchRequest.searchType();
+	public SearchHit[] searchByUserAndUrlAndDate(final RestHighLevelClient client, final String indexName,
+			final String url, String date, String userId, final List<String> fieldNames) throws IOException {
+		if (null == client || null == indexName || indexName.isEmpty() || fieldNames == null || url.isEmpty()
+				|| date.isEmpty() || userId.isEmpty()) {
+			return null;
+		}
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(QueryBuilders.matchAllQuery()).size(1);
+		QueryBuilder queryBuilder = QueryBuilders.boolQuery()
+				.must(QueryBuilders.matchPhraseQuery(fieldNames.get(0), userId))
+				.must(QueryBuilders.matchPhraseQuery(fieldNames.get(1), url))
+				.must(QueryBuilders.matchPhraseQuery(fieldNames.get(2), date));
+		searchSourceBuilder.query(queryBuilder).size(IConfigConstants.MAX_NUM_TIMES_TRAFFIC)
+				.sort(new FieldSortBuilder(fieldNames.get(2)).order(SortOrder.ASC));
+
+		SearchRequest searchRequest = new SearchRequest(indexName);
 		searchRequest.source(searchSourceBuilder);
 		SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
-		LOGGER.info("Search respones: " + searchResponse);
-		return searchResponse;
-	}
-
-	/**
-	 * 
-	 * @param client
-	 * @param indexName
-	 * @return
-	 * @throws IOException
-	 */
-	public boolean isExistDocuments(final RestHighLevelClient client, final String indexName) throws IOException {
-		SearchResponse response = getSearchResponseByOneDocument(client, indexName);
-		if (null == response || response.getHits().getHits().length == 0) {
-			return false;
-		}
-
-		return true;
+		LOGGER.info("Search respones  after search: " + searchResponse);
+		return searchResponse.getHits().getHits();
 	}
 
 	/**
@@ -203,44 +170,23 @@ public class UserActivityService implements IUserActivityService, Job {
 	 * @param totalTime
 	 * @return
 	 */
-	public UserActivityDB saveUserActivity(final String date, final String userId, final String url, final int count,
+	public UserActivityDB updateUserActivity(final String date, final String userId, final String url, final int count,
 			final double totalTime) {
+		if (date.isEmpty() || date == null || userId.isEmpty() || userId == null || url.isEmpty() || url == null) {
+			return null;
+		}
 		try {
-			UserActivityDB userActivity = new UserActivityDB();
-			userActivity.setDate(date);
-			userActivity.setUser_id(userId);
-			userActivity.setUrl(url);
-			userActivity.setCount(count);
-			userActivity.setTotal_time(totalTime);
-			return activityDBRepo.save(userActivity);
+			Optional<UserActivityDB> userActUpdate = activityDBRepo.findByUserIdAndUrlAndDate(userId, url, date);
+			if (userActUpdate.isPresent()
+					&& (userActUpdate.get().getCount() != count || userActUpdate.get().getTotal_time() != totalTime)) {
+				userActUpdate.get().setCount(count);
+				userActUpdate.get().setTotal_time(totalTime);
+				return activityDBRepo.save(userActUpdate.get());
+			}
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	/**
-	 * 
-	 * @param client
-	 * @param indexName
-	 * @return
-	 * @throws IOException
-	 */
-	public boolean deleteAllDocuments(final RestHighLevelClient client, final String indexName) throws IOException {
-		if (!isExistDocuments(client, indexName)) {
-			return false;
-		}
-		DeleteByQueryRequest request = new DeleteByQueryRequest(indexName);
-		request.setQuery(QueryBuilders.matchAllQuery());
-		BulkByScrollResponse response;
-		try {
-			response = client.deleteByQuery(request, RequestOptions.DEFAULT);
-		} catch (IOException e) {
-			LOGGER.error(e.getMessage() + e.getStackTrace());
-			return false;
-		}
-		if (response.getDeleted() == 0)
-			return false;
-		return true;
+		return null;
 	}
 
 	/**
@@ -253,8 +199,8 @@ public class UserActivityService implements IUserActivityService, Job {
 	 */
 	public boolean saveUserActivitesByGroupby(final RestHighLevelClient client, final String indexName,
 			final List<String> fieldNames) throws ParseException, IOException {
-
-		SearchResponse searchResponse = getSearchResponseByGroupbyFields(client, indexName, fieldNames);
+		List<UserActivityDB> addUserActs = new ArrayList<>();
+		SearchResponse searchResponse = groupByUserActs(client, indexName, fieldNames);
 		if (searchResponse == null) {
 			LOGGER.error("search response is null");
 			return false;
@@ -285,7 +231,8 @@ public class UserActivityService implements IUserActivityService, Job {
 					}
 					for (String day : days) {
 						List<Double> dates = new ArrayList<>();
-						SearchHit[] searchHits = findByField(client, indexName, sUrl, day, sUser, fieldNames);
+						SearchHit[] searchHits = searchByUserAndUrlAndDate(client, indexName, sUrl, day, sUser,
+								fieldNames);
 						if (null == searchHits || searchHits.length == 0) {
 							LOGGER.error("Not found data in Elastic Search");
 							return false;
@@ -293,16 +240,28 @@ public class UserActivityService implements IUserActivityService, Job {
 						for (SearchHit hit : searchHits) {
 							dates.add(toMilliseconds(hit.getSourceAsMap().get(fieldNames.get(2)).toString()));
 						}
-						UserActivityDB userActivity = saveUserActivity(day, sUser, sUrl, countTimesTraffic(dates),
+						UserActivityDB userActivity1 = new UserActivityDB(sUser, sUrl, day, countTimesTraffic(dates),
 								countTotalTime(dates));
-						LOGGER.info("User activity: " + userActivity);
-						if (userActivity == null) {
-							return false;
-						}
+						LOGGER.info("User activity: " + userActivity1);
+						addUserActs.add(userActivity1);
 					}
 				}
 			}
 		}
+		return saveAllUserActs(addUserActs);
+	}
+
+	/**
+	 * 
+	 * @param userActs
+	 * @return
+	 */
+	public boolean saveAllUserActs(final List<UserActivityDB> userActs) {
+		if (userActs == null || userActs.size() == 0) {
+			return false;
+		}
+		if (activityDBRepo.saveAll(userActs).isEmpty())
+			return false;
 		return true;
 	}
 
