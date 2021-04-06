@@ -4,6 +4,7 @@ import com.quan12yt.trackingcronjob.exception.DataNotFoundException;
 import com.quan12yt.trackingcronjob.exception.VariablesUnacceptedException;
 import com.quan12yt.trackingcronjob.model.UserActivity;
 import com.quan12yt.trackingcronjob.repository.UserActivityRepository;
+import com.quan12yt.trackingcronjob.service.UserActivityService;
 import com.quan12yt.trackingcronjob.service.imp.UserActivityServiceImp;
 import org.junit.Assert;
 import org.junit.Before;
@@ -24,12 +25,11 @@ import java.util.Collections;
 import java.util.List;
 
 
-@AutoConfigureMockMvc
 @RunWith(SpringRunner.class)
 public class UserActivityServiceTest {
 
     @Autowired
-    private UserActivityServiceImp activityService;
+    private UserActivityService activityService;
     @MockBean
     private UserActivityRepository activityRepository;
 
@@ -51,9 +51,9 @@ public class UserActivityServiceTest {
 
     @Before
     public void setup() {
-        activity1 = new UserActivity("quan.pham", "facebook.com", "03-23-2021", 123L, 11);
-        activity2 = new UserActivity("len.ho", "facebook.com", "03-23-2021", 123L, 11);
-        activity3 = new UserActivity("quang.bui", "facebook.com", "03-23-2021", 123L, 11);
+        activity1 = new UserActivity("quan.pham", "facebook.com", "2021-04-05", 123L, 11);
+        activity2 = new UserActivity("len.ho", "facebook.com", "2021-04-05", 123L, 11);
+        activity3 = new UserActivity("quang.bui", "facebook.com", "2021-04-05", 123L, 11);
 
         activityList.add(activity1);
         activityList.add(activity3);
@@ -84,6 +84,39 @@ public class UserActivityServiceTest {
     @Test
     public void getViolatedUnacceptedVariables() {
         Throwable ex = Assert.assertThrows(VariablesUnacceptedException.class, () -> activityService.getViolatedUserByDateAndUrl("", ""));
+        Assert.assertSame("Url or date is null or empty", ex.getMessage());
+    }
+
+    @Test
+    public void findByMonthSuccess() {
+        Object[][] objects = new Object[1][3];
+        objects[0][0] = "05";
+        objects[0][1] = 11;
+        objects[0][2] = 123L;
+        when(activityRepository.findByUserIdAndUrlAndMonth("facebook.com","PC-QUANPHAM$", "04")).thenReturn(Collections.singletonList(activityList.get(0)));
+        Object[][] result = activityService.getViolatedUserByDateAndUrlAndMonth("facebook.com", "PC-QUANPHAM$", "04");
+
+        Assert.assertEquals(objects[0][0], result[0][0]);
+        Assert.assertEquals(objects[0][1], result[0][1]);
+        Assert.assertEquals(objects[0][2], result[0][2]);
+    }
+    @Test
+    public void findByMonthEmptyData() {
+        when(activityRepository.findByUserIdAndUrlAndMonth("facebook.com","PC-QUANPHAM$", "04")).thenReturn(Collections.emptyList());
+        Throwable ex = Assert.assertThrows(DataNotFoundException.class, () -> activityService.getViolatedUserByDateAndUrlAndMonth("facebook.com", "PC-QUANPHAM$", "04"));
+        Assert.assertSame("Can't find any user activities for the given data", ex.getMessage());
+
+    }
+
+    @Test
+    public void findByMonthInvalidMonth() {
+        Throwable ex = Assert.assertThrows(VariablesUnacceptedException.class, () -> activityService.getViolatedUserByDateAndUrlAndMonth("facebook.com","PC-QUANPHAM$", "034"));
+        Assert.assertSame("Month value is invalid", ex.getMessage());
+    }
+
+    @Test
+    public void findByMonthUnacceptedVariables() {
+        Throwable ex = Assert.assertThrows(VariablesUnacceptedException.class, () -> activityService.getViolatedUserByDateAndUrlAndMonth("facebook.com",null, "03"));
         Assert.assertSame("Url or date is null or empty", ex.getMessage());
     }
 

@@ -1,4 +1,4 @@
-package com.quan12yt.trackingcronjob.dto;
+package com.quan12yt.trackingcronjob.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,6 +6,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class ResponseMessage {
+
     private String message;
     private String timestamp;
 

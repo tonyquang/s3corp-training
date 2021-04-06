@@ -1,4 +1,4 @@
-package com.quan12yt.trackingcronjob.unittest.utiltest;
+package com.quan12yt.trackingcronjob.unittest.utils;
 
 import com.quan12yt.trackingcronjob.util.DateUtils;
 import org.junit.Assert;

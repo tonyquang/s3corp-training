@@ -23,14 +23,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorMessage dataNotFound(DataNotFoundException ex, WebRequest webRequest){
-        return new ErrorMessage(HttpStatus.BAD_REQUEST.value()
+        return new ErrorMessage(HttpStatus.NOT_FOUND.value()
                 , ex.getMessage()
                 , new Date()
                 , webRequest.getDescription(false));
     }
 
     @ExceptionHandler(VariablesUnacceptedException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage variablesUnacceptedException(VariablesUnacceptedException ex, WebRequest webRequest){
         return new ErrorMessage(HttpStatus.BAD_REQUEST.value()
                 , ex.getMessage()
@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(SendEmailFailedException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorMessage sendEmailFailed(SendEmailFailedException ex, WebRequest webRequest){
         return new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.value()
                 , ex.getMessage()

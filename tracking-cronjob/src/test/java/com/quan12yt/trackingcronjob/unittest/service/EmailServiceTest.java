@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -28,7 +29,7 @@ public class EmailServiceTest {
     @Autowired
     EmailService emailService;
 
-    @Autowired
+    @MockBean
     SimpleMailMessage simpleMailMessage;
     List<String> emailList = new ArrayList<>();
 
@@ -65,6 +66,26 @@ public class EmailServiceTest {
         emailList.clear();
     }
 
+//    @Test
+//    public void sendEmailSucceed(){
+//        Logger fooLogger = (Logger) LoggerFactory.getLogger(EmailService.class);
+//
+//        // create and start a ListAppender
+//        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+//        listAppender.start();
+//
+//        // add the appender to the logger
+//        // addAppender is outdated now
+//        fooLogger.addAppender(listAppender);
+//
+//        // call method under test
+//        emailService.sendEmail(emailList);
+//        // JUnit assertions
+//        List<ILoggingEvent> logsList = listAppender.list;
+//        Assert.assertEquals("Send warning email succeed to email : " + emailList.get(0), logsList.get(0)
+//                .getMessage());
+//    }
+
     @Test
     public void sendEmptyListEmail(){
         List<String> emptyList = Collections.emptyList();
@@ -86,3 +107,4 @@ public class EmailServiceTest {
         Assert.assertTrue(ex.getMessage().contains("Failed to send warning email"));
     }
 }
+

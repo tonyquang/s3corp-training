@@ -17,11 +17,7 @@ public class Users implements Serializable {
     @Id
     @Column(name = "user_id")
     private String userId;
-    @Column(name = "user_name")
-    private String userName;
     @Column(name = "email")
     private String email;
-    @Column(name = "phone_number")
-    private String phoneNumber;
 
 }

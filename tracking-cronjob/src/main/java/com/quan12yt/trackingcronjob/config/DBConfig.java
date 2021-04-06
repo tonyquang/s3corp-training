@@ -14,7 +14,6 @@ import java.sql.SQLException;
 @EnableAutoConfiguration
 public class DBConfig {
 
-
     @Bean
     @Primary
     public DataSource dataSource() throws SQLException {

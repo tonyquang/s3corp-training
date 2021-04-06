@@ -1,5 +1,6 @@
 package com.quan12yt.trackingcronjob.util;
 
+import com.quan12yt.trackingcronjob.exception.VariablesUnacceptedException;
 import com.quan12yt.trackingcronjob.model.UserActivity;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -13,6 +14,9 @@ import java.util.List;
 public class CsvUtils {
 
     public static ByteArrayInputStream toCSV(List<UserActivity> activities) {
+        if(activities == null || activities.isEmpty()){
+            throw new VariablesUnacceptedException("List activities cant be empty or null");
+        }
         final CSVFormat format = CSVFormat.DEFAULT.withQuoteMode(QuoteMode.MINIMAL);
         try (ByteArrayOutputStream out = new ByteArrayOutputStream();
              CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), format);) {

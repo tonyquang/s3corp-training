@@ -5,7 +5,7 @@ import org.quartz.SchedulerException;
 
 public interface JobService {
 
-    void runSendEmailJoh();
+    boolean runSendEmailJoh();
 
 //    void runUpdateActivityJob(UserActivity userActivity, Integer count, Integer time);
 //

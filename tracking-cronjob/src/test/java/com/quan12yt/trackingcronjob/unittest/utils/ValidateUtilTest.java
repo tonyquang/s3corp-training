@@ -1,4 +1,4 @@
-package com.quan12yt.trackingcronjob.unittest.utiltest;
+package com.quan12yt.trackingcronjob.unittest.utils;
 
 
 import com.quan12yt.trackingcronjob.util.ValidateUtil;
@@ -35,8 +35,18 @@ public class ValidateUtilTest {
         Assert.assertTrue(ValidateUtil.isEmptyOrNull("dfdg",null));
     }
 
-//    @Test
-//    public void validEmailTest(){
-//        Assert.assertTrue(ValidateUtil.isEmail("quan12yt@gmail.com"));
-//    }
+    @Test
+    public void validMonthTest(){
+        Assert.assertTrue(ValidateUtil.isValidMonth("02"));
+    }
+
+    @Test
+    public void invalidMonthTest() {
+        Assert.assertTrue(!ValidateUtil.isValidMonth("15"));
+    }
+    @Test
+    public void notMonthTest() {
+        Assert.assertTrue(!ValidateUtil.isValidMonth("sad"));
+    }
+
 }
