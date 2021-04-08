@@ -48,19 +48,6 @@ class EmailServicesTest {
 				.build());
 	}
 
-	// You must changing wrong username and password in TestEmailService.properties before run test
-	@Test
-	void sendMailAuthenticationFailTest() {
-		Throwable ex = assertThrows(MailAuthenticationException.class, () -> iEmailService.sendMail(
-				EmailModel.builder()
-						.subject(Constant.EMAIL_SUBJECT)
-						.content(Constant.EMAIL_CONTENT)
-						.email(Arrays.asList(emailListValid))
-						.build()
-		));
-		assertThat(ex.getMessage(), containsString("Too many login attempts"));
-	}
-
 	@Test
 	void sendMailInvalidEmailTest() {
 		Throwable ex = assertThrows(MailSendException.class, () -> iEmailService.sendMail(

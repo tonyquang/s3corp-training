@@ -44,6 +44,9 @@ public class UserActivityServicesTest {
         userActivityList.add(UserActivity.builder().userId("PC-QUANG.BUI").url(Constant.HOST_NAME).count(21).date("2021-03-23").totalTime(128.26).build());
         userActivityList.add(UserActivity.builder().userId("PC-QUAN.PHAM").url(Constant.HOST_NAME).count(22).date("2021-03-23").totalTime(128.26).build());
         userActivityList.add(UserActivity.builder().userId("PC-LEN.HO").url(Constant.HOST_NAME).count(30).date("2021-03-23").totalTime(128.26).build());
+        userActivityList.add(UserActivity.builder().userId("PC-QUANG.BUI").url(Constant.HOST_NAME).count(22).date("2021-03-23").totalTime(128.26).build());
+        userActivityList.add(UserActivity.builder().userId("PC-QUANG.BUI").url(Constant.HOST_NAME).count(30).date("2021-03-23").totalTime(128.26).build());
+        userActivityList.add(UserActivity.builder().userId("PC-LEN.HO").url(Constant.HOST_NAME).count(50).date("2021-03-23").totalTime(128.26).build());
     }
 
     @Test
@@ -54,8 +57,13 @@ public class UserActivityServicesTest {
         List<UserActivity> actual = userActivityServices.selectUserActivityList(Constant.HOST_NAME,
                 Constant.MAX_TIME_ACCESS_FB,
                 STR_DATE);
-        assertSame(actual.size(), userActivityList.size());
-        assertThat(actual, is(userActivityList));
+
+        List<UserActivity> expectedRs = new ArrayList<>();
+        expectedRs.add(UserActivity.builder().userId("PC-LEN.HO").url(Constant.HOST_NAME).count(50).date("2021-03-23").totalTime(128.26).build());
+        expectedRs.add(UserActivity.builder().userId("PC-QUAN.PHAM").url(Constant.HOST_NAME).count(22).date("2021-03-23").totalTime(128.26).build());
+        expectedRs.add(UserActivity.builder().userId("PC-QUANG.BUI").url(Constant.HOST_NAME).count(30).date("2021-03-23").totalTime(128.26).build());
+        assertSame(actual.size(), expectedRs.size());
+        assertThat(actual, is(expectedRs));
     }
 
     @Test
@@ -68,4 +76,5 @@ public class UserActivityServicesTest {
                 STR_DATE);
         assertSame(actual.size(), 0);
     }
+    
 }

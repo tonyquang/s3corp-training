@@ -3,6 +3,7 @@ package com.cronemail.demo.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "user_activity")
@@ -10,18 +11,21 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserActivity {
+@IdClass(IDUserActivity.class)
+public class UserActivity implements Serializable {
 
     @Id
     @Column(name = "user_id", nullable = false)
     private String userId;
 
+    @Id
     @Column(name = "url", nullable = false)
     private String url;
 
     @Column(name = "count")
     private int count;
 
+    @Id
     @Column(name = "date", nullable = false)
     private String date;
 

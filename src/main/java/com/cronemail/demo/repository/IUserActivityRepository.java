@@ -1,12 +1,13 @@
 package com.cronemail.demo.repository;
 
+import com.cronemail.demo.model.IDUserActivity;
 import com.cronemail.demo.model.UserActivity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface IUserActivityRepository extends JpaRepository<UserActivity, Long> {
+public interface IUserActivityRepository extends JpaRepository<UserActivity, IDUserActivity> {
     /*
     Select User activity belong to filter host, count and time stamp
     @param hostName: facebook, youtube,...
