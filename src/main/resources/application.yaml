@@ -1,0 +1,22 @@
+server:
+    port: 9500
+
+eureka:
+    client:
+        serviceUrl:
+            defaultZone: http://localhost:9000/eureka
+
+spring:
+    application:
+        name: gateway-service
+    cloud:
+        gateway:
+            routes:
+                - id: db-service
+                  uri: lb://DB-SERVICE
+                  predicates:
+                      - Path=/**
+                - id: load-service
+                  uri: lb://LOAD-SERVICE
+                  predicates:
+                      - Path=/**
