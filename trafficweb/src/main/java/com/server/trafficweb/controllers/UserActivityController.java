@@ -47,7 +47,7 @@ public class UserActivityController {
 				.of(IConfigConstants.MAX_NUM_USER, IConfigConstants.MAX_NUM_URL, IConfigConstants.MAX_NUM_TIMES_TRAFFIC)
 				.collect(Collectors.toList());
 
-		String strScheduledFireTime = "2021-04-15 15:50:00.0";
+		String strScheduledFireTime = "2021-04-20 14:00:00.0";
 		long startTime = System.nanoTime();
 		try {
 			if (!service.saveUserActivitesInDay(client, IConfigConstants.INDEX_NAME, fieldNames, sizes,

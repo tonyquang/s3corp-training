@@ -19,17 +19,13 @@ import javax.sql.DataSource;
 
 import org.apache.http.HttpHost;
 import org.apache.log4j.Logger;
-import org.elasticsearch.action.search.ClearScrollRequest;
-import org.elasticsearch.action.search.ClearScrollResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.Scroll;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
@@ -66,8 +62,8 @@ public class UserActivityService<E> implements IUserActivityService, Job {
 	private final String KEYWORD_SUFFIX = ".keyword";
 	private final double WAITTIME = 180000.0;
 	private final String sCONNECT = "CONNECT";
-	//T08:39:55.037+0700
-	private final String M_START_TIME = "T08:00:00.000+0700";
+	// T08:39:55.037+0700
+	private final String M_START_TIME = "T16:00:00.000+0700";
 	private final String M_END_TIME = "T11:30:00.000+0700";
 	private final String A_START_TIME = "T11:31:00.000+0700";
 	private final String A_END_TIME = "T15:49:00.000+0700";
@@ -150,14 +146,11 @@ public class UserActivityService<E> implements IUserActivityService, Job {
 		}
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.aggregation(aggregation);
-		QueryBuilder queryBuilder = QueryBuilders.boolQuery()
-				.must(QueryBuilders.matchPhraseQuery(fieldNames.get(2), "2021-04-15"))
-				.must(QueryBuilders.rangeQuery(fieldNames.get(2)).gte(times.get(0)).lte(times.get(1)));
-		searchSourceBuilder.query(queryBuilder);
-		// searchSourceBuilder.query(QueryBuilders.rangeQuery(fieldNames.get(2)).gte(times.get(0)).lte(times.get(1)));
-		//searchSourceBuilder.query(QueryBuilders.rangeQuery(fieldNames.get(2)).from("2021-04-12").to("2021-04-16"));
-		// searchSourceBuilder.query(QueryBuilders.rangeQuery(fieldNames.get(2)).from("2021-04-15T11:31+0700").to("2021-04-15T16:00+0700"));
-		
+		searchSourceBuilder.query(QueryBuilders.rangeQuery(fieldNames.get(2)).from(times.get(0)).to(times.get(1)));
+
+//		searchSourceBuilder.query(QueryBuilders.rangeQuery(fieldNames.get(2)).from("2021-04-12T08:00:00.000+0700")
+//				.to("2021-04-19T16:00:00.000+0700"));
+
 		SearchRequest searchRequest = new SearchRequest(indexName);
 		searchRequest.searchType();
 		searchRequest.source(searchSourceBuilder);
@@ -171,52 +164,18 @@ public class UserActivityService<E> implements IUserActivityService, Job {
 
 		SearchRequest searchRequest = new SearchRequest(indexName);
 		searchRequest.source(searchSourceBuilder);
-		// first scroll
-		final Scroll scroll = new Scroll(TimeValue.timeValueMinutes(1L));
-		searchRequest.scroll(scroll);
 		SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
-		LOGGER.info("First scroll response: " + searchResponse);
-		String scrollId = searchResponse.getScrollId();
+		LOGGER.info("Search response: " + searchResponse);
 		SearchHit[] searchHits = searchResponse.getHits().getHits();
-
-//		// request more scroll
-//		List<SearchHit[]> lstSearchHits = new ArrayList<>();
-//		lstSearchHits.add(searchHits);
-//		while (searchHits != null && searchHits.length > 0) {
-//			SearchScrollRequest scrollRequest = new SearchScrollRequest(scrollId);
-//			scrollRequest.scroll(scroll);
-//			searchResponse = client.scroll(scrollRequest, RequestOptions.DEFAULT);
-//			LOGGER.info("Other scroll response: " + searchResponse);
-//
-//			searchHits = searchResponse.getHits().getHits();
-//			if (searchHits != null && searchHits.length > 0) {
-//				lstSearchHits.add(searchHits);
-//				scrollId = searchResponse.getScrollId();
-//			}
-//		}
-//		LOGGER.info("Size of search hit list: " + lstSearchHits.size());
-//		SearchHit[] resultSearchHits = lstSearchHits.get(0);
-//		for (int i = 1; i < lstSearchHits.size(); i++) {
-//			resultSearchHits = concatenate(resultSearchHits, lstSearchHits.get(i));
-//		}
-
-		ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
-		clearScrollRequest.addScrollId(scrollId);
-		ClearScrollResponse clearScrollResponse = client.clearScroll(clearScrollRequest, RequestOptions.DEFAULT);
-		if (!clearScrollResponse.isSucceeded()) {
-			LOGGER.error("Clear scroll was not successful");
-			return null;
-		}
-		LOGGER.info("Size search hit after concat: " + searchHits.length);
+		LOGGER.info("Size search hitt: " + searchHits.length);
 		return searchHits;
 	}
 
-	public SearchHit[] concatenate(SearchHit[] first, SearchHit[] second) {
-		if (second == null || second.length == 0) {
-			return first;
-		}
-		return Stream.of(first, second).flatMap(Stream::of).toArray(SearchHit[]::new);
-	}
+	/*
+	 * public SearchHit[] concatenate(SearchHit[] first, SearchHit[] second) { if
+	 * (second == null || second.length == 0) { return first; } return
+	 * Stream.of(first, second).flatMap(Stream::of).toArray(SearchHit[]::new); }
+	 */
 
 	/**
 	 * 
@@ -257,15 +216,25 @@ public class UserActivityService<E> implements IUserActivityService, Job {
 	 * @throws IOException
 	 */
 	private SearchHit[] searchByUserAndUrl(RestHighLevelClient client, String indexName, String url, String userId,
-			List<String> fieldNames) throws IOException {
+			List<String> fieldNames, List<String> scheduledTimes) throws IOException {
 
 		QueryBuilder queryBuilder = QueryBuilders.boolQuery()
 				.must(QueryBuilders.matchPhraseQuery(fieldNames.get(0), userId))
-				.must(QueryBuilders.matchPhraseQuery(fieldNames.get(1), url));
+				.must(QueryBuilders.matchPhraseQuery(fieldNames.get(1), url)).must(QueryBuilders
+						.rangeQuery(fieldNames.get(2)).from(scheduledTimes.get(0)).to(scheduledTimes.get(1)));
+
+		/*
+		 * QueryBuilder queryBuilder = QueryBuilders.boolQuery()
+		 * .must(QueryBuilders.matchPhraseQuery(fieldNames.get(0), userId))
+		 * .must(QueryBuilders.matchPhraseQuery(fieldNames.get(1), url))
+		 * .must(QueryBuilders.rangeQuery(fieldNames.get(2)).from(
+		 * "2021-04-09T08:00:00.000+0700") .to("2021-04-19T16:00:00.000+0700"));
+		 */
 
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(queryBuilder).size(IConfigConstants.MAX_SIZE_SHOW_DOCUMENT)
-				.sort(new FieldSortBuilder(fieldNames.get(2)).order(SortOrder.ASC)).sort("_doc", SortOrder.ASC);
+				.sort(new FieldSortBuilder(fieldNames.get(2)).order(SortOrder.ASC));
+		// .sort("_doc", SortOrder.ASC);
 		return getHitsFromSearch(indexName, searchSourceBuilder, client);
 	}
 
@@ -383,7 +352,8 @@ public class UserActivityService<E> implements IUserActivityService, Job {
 //	}
 
 	private boolean handleSaveUserActivitesInDay(final RestHighLevelClient client, final String indexName,
-			final List<String> fieldNames, final Terms termsUser) throws ParseException, IOException {
+			final List<String> fieldNames, final Terms termsUser, final List<String> scheduledTimes)
+			throws ParseException, IOException {
 		List<UserActivityDB> addUserActs = new ArrayList<>();
 		int indexUser = 0;
 		int indexUrl = 0;
@@ -441,7 +411,7 @@ public class UserActivityService<E> implements IUserActivityService, Job {
 						indexUrl++;
 						continue;
 					}
-					dateSearchHits = searchByUserAndUrl(client, indexName, sUrl, sUser, fieldNames);
+					dateSearchHits = searchByUserAndUrl(client, indexName, sUrl, sUser, fieldNames, scheduledTimes);
 					if (null == dateSearchHits || dateSearchHits.length == 0) {
 						LOGGER.error("Not found data in Elastic Search");
 						return false;
@@ -547,7 +517,7 @@ public class UserActivityService<E> implements IUserActivityService, Job {
 			LOGGER.error("Users is null");
 			return false;
 		}
-		return handleSaveUserActivitesInDay(client, indexName, fieldNames, termsUser);
+		return handleSaveUserActivitesInDay(client, indexName, fieldNames, termsUser, scheduledTimes);
 	}
 
 	private List<String> getScheduledFireTime(String scheduledFireTime) {

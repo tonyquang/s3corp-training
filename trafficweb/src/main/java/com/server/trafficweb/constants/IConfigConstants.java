@@ -19,7 +19,7 @@ public interface IConfigConstants {
 
 	public static int MAX_NUM_USER = 200;
 
-	public static int MAX_NUM_URL = 5000;
+	public static int MAX_NUM_URL = 10000;
 
 	public static int MAX_NUM_TIMES_TRAFFIC = 500;
 	
