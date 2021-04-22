@@ -1,6 +1,5 @@
 package com.example.elastic.configuration;
 
-import com.quan12yt.demo.CommonDataSource;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.transport.TransportClient;
@@ -22,13 +21,14 @@ import java.sql.SQLException;
 public class DBConfig {
 //    @Bean
 //    public DataSource dataSource() throws SQLException {
-//        return CommonDataSource.getDataSource();
+//        return CommonDataSource.getHikariDataSource();
 //    }
     @Bean
     public RestHighLevelClient elasticsearchClient() {
         final ClientConfiguration clientConfiguration = ClientConfiguration.builder()
                 .connectedTo("199.30.30.98:9200")  // set the address of the Elasticsearch cluster
                 //.connectedTo("localhost:9200")
+                .withSocketTimeout(500000)
                 .build();
         return RestClients.create(clientConfiguration).rest();
     }

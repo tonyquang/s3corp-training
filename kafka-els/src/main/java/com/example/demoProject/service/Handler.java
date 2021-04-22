@@ -29,6 +29,7 @@ public class Handler extends Thread {
             System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>");
             System.out.println(request);
             String USER_NAME = System.getProperty("user.name");
+//            String USER_NAME = "PC-LENHO$";
             final String msg = " {\"user_id\":\"" + USER_NAME + "\", \"url\":\"" + request + "\"} ";
             producer.inputKafka(msg);
             System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>");

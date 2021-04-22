@@ -1,52 +1,53 @@
 package com.example.elastic.controller;
 
-import com.easyquartz.scheduler.ScheduleService;
-import com.example.elastic.ElasticApplication;
-import com.example.elastic.model.UserActivity;
-import com.example.elastic.model.UserActivityDB;
 import com.example.elastic.repository.UserActDBRepository;
 import com.example.elastic.repository.UserActRepository;
+import com.example.elastic.repository.UsersRepository;
 import com.example.elastic.service.UserActService;
+import com.example.elastic.service.UserActiveService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.*;
+import java.text.ParseException;
+
 @RestController
 public class UserActController {
 
     @Autowired
+    public UsersRepository usersRepository;
+    @Autowired
     private UserActService userActService;
+    @Autowired
+    private UserActiveService userActService2;
     @Autowired
     private UserActRepository userActRepository;
     @Autowired
     private UserActDBRepository userActDBRepository;
-    @GetMapping("/find-all")
-    public Iterable<UserActivity> findAllUsers() {
-        return userActService.findAll();
-    }
-    @GetMapping("/find-all-db")
-    public List<UserActivityDB> findAllUsersDB() {
-        return userActDBRepository.findAll();
-    }
-    @GetMapping("/find-by-url")
-    public List<UserActivity> findByUrl(@RequestBody String url) {
-        return userActService.findByUrl(url);
-    }
-    @GetMapping("/group-by-field")
-    public List<String> groupByField() throws IOException {
-        return userActService.groupByField();
-    }
-    @GetMapping("find-by-field")
-    public List<UserActivity> solve2(@RequestBody String message) throws IOException {
-        return userActService.findByField(userActService.splitHeadTail(message),"2021-03-19","2021-03-19","PC-LenHo");
-    }
-    @PostMapping("/saveAll")
-    public boolean saveAll() {
-        return userActService.saveAll();
-    }
+    //----------------------------BEGIN---------------------------------------------------\
+    //pb 1: group  {user_id, url}+query {date}--> find(use croll)
     @PostMapping("/pull-into-db")
-    public boolean pullDataIntoDB(@RequestBody String time) throws IOException {
+    public boolean pullDataIntoDB(@RequestBody String time) throws IOException, ParseException {
+        return userActService.mainProcess(time);
+    }
+    //pb 2: source {user_id} agg url & localdate
+    @PostMapping("/pull-into-db2")
+    public boolean pullDataIntoDB2(@RequestBody String time) throws IOException, ParseException {
         return userActService.mainProcessing(time);
+    }
+    //pb3 groupby {3 field}
+    @PostMapping("/pull-into-db3")
+    public boolean pullDataIntoDB3(@RequestBody String time) throws IOException, ParseException {
+        return userActService.mainProcessingTerm(time);
+    }
+    //pb4 soruce {2 field} agg 1 field
+    @GetMapping("/pull-into-db4")
+    public void pullDataIntoDB4() throws IOException, ParseException {
+        userActService.mainProcessing3("");
+    }
+    //pb5 nt but add for
+    @GetMapping("/pull-into-db5")
+    public void pullDataIntoDB5() throws IOException, ParseException {
+        userActService2.mainCore("");
     }
 }

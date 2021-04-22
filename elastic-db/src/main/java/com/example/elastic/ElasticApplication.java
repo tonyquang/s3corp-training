@@ -1,8 +1,8 @@
 package com.example.elastic;
 
 import com.easyquartz.scheduler.ScheduleService;
-import com.example.elastic.service.UserActService;
 
+import com.example.elastic.service.UserActiveService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +16,7 @@ public class ElasticApplication {
 		ElasticApplication.scheduleService = scheduleService;
 	}
 	public static void startCron(){
-		scheduleService.schedule(UserActService.class, "lenho11","0 22 11,16 ? * *");
+		scheduleService.schedule(UserActiveService.class, "lenho15","0 22 11,16 ? * *");
 				//"","0 50 11,13 ? * *");
 			//	"","0/15 * * * * ? *");
 	}
